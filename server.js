@@ -14,10 +14,11 @@ const applications = [];
 const users = [];
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com', port: 587, secure: false,
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: { user: process.env.SMTP_USER || '', pass: process.env.SMTP_PASS || '' }
 });
-
 const productLabel = t => ({payday:'Payday Loan',vehicle:'Vehicle Finance',home:'Home Loan',medical:'Medical Aid',insurance:'Insurance',diamond:'Diamond Card'}[t]||t);
 const productColor = t => ({payday:'#3B6D11',vehicle:'#3C3489',home:'#633806',medical:'#791F1F',insurance:'#085041',diamond:'#3C3489'}[t]||'#C41E1E');
 const tierFromPoints = p => p>=2000?'Diamond':p>=1000?'Gold':'Bronze';
