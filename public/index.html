@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raoul Capital — Union Loyalty Portal | Version 1.0</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--red:#C41E1E;--dark:#1a1a1a;--gold:#D4A017;--bg:#f8f7f5;--card:#fff;--border:#e5e3de;--text:#1a1a1a;--muted:#6b6964;--green:#3B6D11;--green-bg:#EAF3DE;--blue:#185FA5;--blue-bg:#E6F1FB;--amber:#854F0B;--amber-bg:#FAEEDA;--purple:#3C3489;--purple-bg:#EEEDFE}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit}
+
+/* ── NAV ── */
+.nav{background:var(--dark);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.logo-img{height:32px;width:auto;object-fit:contain;border-radius:4px}
+.logo-divider{width:1px;height:20px;background:#333}
+.logo-sub{color:#666;font-size:11px}
+.nav-links{display:flex;gap:4px}
+.nav-btn{padding:6px 14px;border-radius:6px;font-size:13px;border:none;transition:all .15s}
+.nav-btn.ghost{background:transparent;color:#aaa}
+.nav-btn.ghost:hover{background:#2a2a2a;color:#fff}
+.nav-btn.active{background:var(--red);color:#fff}
+.nav-member{color:#888;font-size:12px;display:flex;align-items:center;gap:6px}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:#1D9E75}
+
+/* ── LAYOUT ── */
+.page{display:none}
+.page.active{display:block}
+
+/* ── HOME ── */
+.hero{background:var(--dark);color:#fff;padding:56px 24px;text-align:center}
+.hero h1{font-size:36px;font-weight:300;letter-spacing:-0.5px;margin-bottom:12px}
+.hero h1 span{color:var(--red);font-weight:600}
+.hero p{font-size:15px;color:#aaa;max-width:480px;margin:0 auto 32px;line-height:1.7}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:900px;margin:0 auto;padding:40px 24px}
+.product-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 16px;text-align:center;cursor:pointer;transition:all .15s}
+.product-card:hover{border-color:var(--red);transform:translateY(-2px)}
+.product-card.selected{border:2px solid var(--red)}
+.pc-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:20px}
+.pc-name{font-size:14px;font-weight:500;margin-bottom:4px}
+.pc-sub{font-size:12px;color:var(--muted)}
+.pc-pts{font-size:11px;margin-top:8px;padding:2px 8px;border-radius:10px;background:var(--green-bg);color:var(--green);display:inline-block}
+
+/* ── APPLICATION FORM ── */
+.app-wrap{max-width:720px;margin:0 auto;padding:24px}
+.app-header{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:16px}
+.app-header-top{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.app-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.app-title{font-size:18px;font-weight:500}
+.app-sub{font-size:13px;color:var(--muted)}
+.progress{display:flex;align-items:flex-start;gap:0}
+.p-step{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+.p-step::after{content:'';position:absolute;top:14px;left:50%;width:100%;height:1px;background:var(--border)}
+.p-step:last-child::after{display:none}
+.p-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;position:relative;z-index:1;border:2px solid var(--border);background:var(--card);color:var(--muted);transition:all .2s}
+.p-dot.done{background:var(--red);border-color:var(--red);color:#fff}
+.p-dot.curr{border-color:var(--red);color:var(--red)}
+.p-lbl{font-size:10px;color:var(--muted);margin-top:4px;text-align:center;max-width:60px}
+
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
+.s-head{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;margin-top:24px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.s-head:first-child{margin-top:0}
+.fg{display:grid;gap:14px;margin-bottom:4px}
+.fg2{grid-template-columns:1fr 1fr}
+.fg3{grid-template-columns:1fr 1fr 1fr}
+.fg1{grid-template-columns:1fr}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;color:var(--muted);font-weight:500}
+.field input,.field select,.field textarea{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-size:14px;font-family:inherit;transition:border .15s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--red)}
+.field textarea{resize:vertical;min-height:72px}
+.hint{font-size:11px;color:var(--muted);margin-top:2px}
+
+.radio-row{display:flex;gap:8px;flex-wrap:wrap}
+.ropt{padding:8px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;cursor:pointer;transition:all .12s;background:#fff;color:var(--text)}
+.ropt:hover{border-color:var(--red)}
+.ropt.sel{border-color:var(--red);background:#FEF2F2;color:#7F1D1D}
+
+.calc-box{background:var(--bg);border-radius:8px;padding:14px;margin:14px 0}
+.c-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)}
+.c-row:last-child{border:none;font-weight:600;padding-top:10px;font-size:14px}
+.c-good{color:var(--green)}
+.c-warn{color:var(--amber)}
+.c-bad{color:#A32D2D}
+
+.cond-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.cond-pill{padding:9px 12px;border-radius:8px;border:1px solid var(--border);font-size:13px;cursor:pointer;text-align:center;transition:all .12s;background:#fff}
+.cond-pill:hover{background:var(--bg)}
+.cond-pill.sel{background:var(--blue-bg);border-color:var(--blue);color:var(--blue)}
+
+.plan-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.plan{border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;text-align:center;transition:all .12s}
+.plan:hover{border-color:var(--red)}
+.plan.sel{border:2px solid var(--red)}
+.plan-name{font-size:13px;font-weight:600;margin-bottom:6px}
+.plan-price{font-size:22px;font-weight:600;color:var(--red);margin-bottom:8px}
+.plan-price span{font-size:12px;color:var(--muted);font-weight:400}
+.plan-feat{font-size:11px;color:var(--muted);line-height:1.8}
+
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:background .12s}
+.check-item:hover{background:var(--bg)}
+.check-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);margin-top:1px;flex-shrink:0}
+.ci-text{font-size:13px;line-height:1.5}
+.ci-sub{font-size:11px;color:var(--muted)}
+
+.doc-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
+.doc-ic{width:30px;height:30px;border-radius:6px;background:var(--blue-bg);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.doc-name{font-size:13px;flex:1}
+.doc-badge{font-size:11px;padding:3px 8px;border-radius:10px}
+.db-req{background:#FEF2F2;color:#7F1D1D}
+.db-opt{background:var(--bg);color:var(--muted)}
+.db-ok{background:var(--green-bg);color:var(--green)}
+
+.upload-zone{border:2px dashed var(--border);border-radius:8px;padding:24px;text-align:center;cursor:pointer;transition:all .15s;margin:12px 0}
+.upload-zone:hover{background:var(--bg);border-color:var(--red)}
+.upload-zone .uz-icon{font-size:28px;margin-bottom:8px}
+.upload-zone p{font-size:13px;color:var(--muted)}
+
+.spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.spec{background:var(--bg);border-radius:8px;padding:12px}
+.spec-lbl{font-size:11px;color:var(--muted);margin-bottom:4px}
+.spec-val{font-size:15px;font-weight:500}
+
+.form-nav{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 20px}
+.fn-info{font-size:12px;color:var(--muted)}
+.btn{padding:9px 20px;border-radius:8px;font-size:14px;border:1px solid var(--border);background:var(--card);color:var(--text);transition:all .15s}
+.btn:hover{background:var(--bg)}
+.btn-primary{background:var(--red);color:#fff;border-color:var(--red)}
+.btn-primary:hover{background:#a31818}
+.btn-ghost{border-color:transparent;color:var(--muted);background:transparent}
+.btn-ghost:hover{background:var(--bg)}
+.btn-green{background:var(--green);color:#fff;border-color:var(--green)}
+.btn-green:hover{background:#2d5a0e}
+
+/* ── SUCCESS ── */
+.success-wrap{max-width:480px;margin:60px auto;text-align:center;padding:24px}
+.success-ic{width:64px;height:64px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px}
+.success-title{font-size:24px;font-weight:500;margin-bottom:8px}
+.success-sub{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:24px}
+.ref-tag{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 24px;font-family:monospace;font-size:16px;font-weight:600;letter-spacing:1px;display:inline-block;margin-bottom:8px}
+.pts-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:20px;background:var(--amber-bg);color:var(--amber);font-size:13px;font-weight:500;margin-bottom:24px}
+.email-note{font-size:12px;color:var(--muted);background:var(--bg);border-radius:8px;padding:10px 14px;margin-bottom:20px}
+
+/* ── ADMIN ── */
+.admin-wrap{display:flex;min-height:calc(100vh - 52px)}
+.admin-sidebar{width:200px;min-width:200px;background:var(--card);border-right:1px solid var(--border);padding:16px 0}
+.as-section{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;padding:0 16px;margin:12px 0 6px}
+.as-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;color:var(--muted);border:none;background:none;width:100%;text-align:left;cursor:pointer;border-left:2px solid transparent;transition:all .12s}
+.as-item:hover{background:var(--bg);color:var(--text)}
+.as-item.active{border-left-color:var(--red);color:var(--text);font-weight:500;background:var(--bg)}
+.as-count{margin-left:auto;background:var(--red);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px}
+
+.admin-main{flex:1;padding:24px}
+.admin-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.admin-title{font-size:20px;font-weight:500}
+.admin-sub{font-size:13px;color:var(--muted)}
+
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.kpi-lbl{font-size:12px;color:var(--muted);margin-bottom:6px}
+.kpi-val{font-size:26px;font-weight:500}
+.kpi-ch{font-size:11px;margin-top:4px}
+.kpi-up{color:var(--green)}
+.kpi-dn{color:#A32D2D}
+
+.app-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.app-table th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--bg)}
+.app-table td{padding:11px 14px;font-size:13px;border-bottom:1px solid var(--border)}
+.app-table tr:last-child td{border-bottom:none}
+.app-table tr:hover td{background:var(--bg)}
+
+.status-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.sb-new{background:var(--blue-bg);color:var(--blue)}
+.sb-review{background:var(--amber-bg);color:var(--amber)}
+.sb-approved{background:var(--green-bg);color:var(--green)}
+.sb-callback{background:var(--amber-bg);color:var(--amber)}
+.sb-rejected{background:#FEF2F2;color:#7F1D1D}
+
+.action-btn{padding:4px 10px;border-radius:6px;font-size:12px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;transition:all .12s;margin-right:4px}
+.action-btn:hover{background:var(--bg)}
+.action-btn.approve{color:var(--green);border-color:var(--green)}
+.action-btn.reject{color:#A32D2D;border-color:#A32D2D}
+
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:200;display:none}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border-radius:12px;padding:28px;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-title{font-size:17px;font-weight:500}
+.modal-close{border:none;background:none;font-size:20px;cursor:pointer;color:var(--muted)}
+.detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.detail-row:last-child{border:none}
+.detail-lbl{color:var(--muted)}
+.detail-val{font-weight:500}
+
+.empty-state{text-align:center;padding:60px 24px;color:var(--muted)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.empty-text{font-size:15px;margin-bottom:6px;color:var(--text)}
+.empty-sub{font-size:13px}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--dark);color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;z-index:300;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{border-left:3px solid #1D9E75}
+.toast.error{border-left:3px solid var(--red)}
+
+/* ── AUTH PAGES ── */
+.auth-page{min-height:calc(100vh - 52px);display:flex;align-items:center;justify-content:center;padding:24px;background:var(--dark)}
+.auth-box{background:var(--card);border-radius:16px;padding:36px;width:100%;max-width:440px;border:1px solid var(--border)}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.auth-logo-mark{width:36px;height:36px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.auth-logo-text{font-size:15px;font-weight:600;letter-spacing:1px;color:var(--text)}
+.auth-title{font-size:22px;font-weight:500;margin-bottom:6px}
+.auth-sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.auth-field{margin-bottom:14px}
+.auth-field label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:5px}
+.auth-field input,.auth-field select{width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:14px;color:var(--text);background:#fafafa;font-family:inherit;transition:border .15s}
+.auth-field input:focus,.auth-field select:focus{outline:none;border-color:var(--red)}
+.auth-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.auth-btn{width:100%;padding:12px;border-radius:8px;font-size:15px;font-weight:500;border:none;cursor:pointer;transition:all .15s;margin-top:8px;font-family:inherit}
+.auth-btn-primary{background:var(--red);color:#fff}
+.auth-btn-primary:hover{background:#a31818}
+.auth-btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);margin-top:6px}
+.auth-btn-ghost:hover{background:var(--bg)}
+.auth-switch{text-align:center;font-size:13px;color:var(--muted);margin-top:16px}
+.auth-switch a{color:var(--red);cursor:pointer;text-decoration:underline}
+.auth-error{background:#FEF2F2;color:#7F1D1D;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;border:1px solid #fecaca;display:none}
+.auth-error.show{display:block}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:12px}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── MEMBER DASHBOARD ── */
+.dash-wrap{max-width:900px;margin:0 auto;padding:24px}
+.dash-hero{background:var(--dark);border-radius:16px;padding:24px;margin-bottom:20px;display:flex;align-items:center;gap:20px}
+.dash-avatar{width:56px;height:56px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;color:#fff;flex-shrink:0}
+.dash-name{font-size:20px;font-weight:500;color:#fff;margin-bottom:4px}
+.dash-meta{font-size:13px;color:#888;margin-bottom:8px}
+.dash-badges{display:flex;gap:8px;flex-wrap:wrap}
+.dash-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.dash-tier-diamond{background:var(--purple-bg);color:var(--purple)}
+.dash-tier-gold{background:var(--amber-bg);color:var(--amber)}
+.dash-tier-bronze{background:#f5f5f5;color:#666}
+.dash-pts{font-size:28px;font-weight:500;color:var(--gold);margin-left:auto;text-align:right}
+.dash-pts-lbl{font-size:11px;color:#666;letter-spacing:1px}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.dash-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.dash-card-title{font-size:13px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px}
+.dash-app-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.dash-app-row:last-child{border:none}
+.dash-app-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.dash-app-name{font-size:13px;font-weight:500;flex:1}
+.dash-app-ref{font-size:11px;color:var(--muted);font-family:monospace}
+.dash-apply-btn{background:var(--red);color:#fff;border:none;border-radius:10px;padding:12px 20px;font-size:14px;font-weight:500;cursor:pointer;width:100%;margin-top:12px;font-family:inherit;transition:background .15s}
+.dash-apply-btn:hover{background:#a31818}
+.dash-signout{background:none;border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:13px;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s}
+.dash-signout:hover{background:var(--bg);color:var(--text)}
+
+@media(max-width:640px){
+  .auth-row{grid-template-columns:1fr}
+  .dash-grid{grid-template-columns:1fr}
+  .dash-pts{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">
+    <div style="background:#fff;border-radius:6px;padding:3px 8px;display:flex;align-items:center">
+      <img src="/logo.png" alt="Raoul Capital" style="height:28px;width:auto;display:block">
+    </div>
+    <div class="logo-divider"></div>
+    <span class="logo-sub">Union Loyalty Portal</span>
+  </div>
+  <div class="nav-links" id="navLinks">
+    <button class="nav-btn ghost" onclick="showPage('login')" id="navLogin">Sign in</button>
+    <button class="nav-btn active" onclick="showPage('register')" id="navRegister">Register</button>
+    <button class="nav-btn ghost" onclick="showPage('qr')" style="font-size:12px">📱 QR Code</button>
+  </div>
+  <div class="nav-member" id="navMember" style="display:none">
+    <div class="nav-dot"></div>
+    <span id="memberLabel">—</span>
+    <button id="navDashBtn" onclick="showPage('dashboard')" style="background:none;border:none;color:#aaa;font-size:12px;cursor:pointer;margin-left:4px">Dashboard</button>
+    <button id="navAdminBtn" onclick="showPage('admin')" style="display:none;background:none;border:none;color:#C41E1E;font-size:12px;cursor:pointer;margin-left:4px;font-weight:500">Admin Portal</button>
+    <button onclick="signOut()" style="background:none;border:none;color:#666;font-size:12px;cursor:pointer">Sign out</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     HOME — product selector
+═══════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div style="display:inline-block;background:#fff;border-radius:10px;padding:10px 20px;margin-bottom:28px">
+      <img src="/logo.png" alt="Raoul Capital" style="height:52px;width:auto;display:block">
+    </div>
+    <h1>Banking built for <span>union members</span></h1>
+    <p>Exclusive loans, airtime &amp; data, medical aid, insurance and loyalty rewards — designed for union members and their families.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="showPage('register')" style="padding:12px 28px;font-size:15px">Join now — it's free</button>
+      <button class="btn" onclick="showPage('login')" style="padding:12px 28px;font-size:15px;background:transparent;color:#aaa;border-color:#444">Sign in</button>
+      <button class="btn" onclick="showPage('qr')" style="padding:12px 20px;font-size:14px;background:transparent;color:#666;border-color:#333">📱 QR Code</button>
+    </div>
+  </div>
+  <div class="product-grid">
+    <div class="product-card" onclick="startApp('payday')">
+      <div class="pc-icon" style="background:#EAF3DE;font-size:22px">💵</div>
+      <div class="pc-name">Payday Loan</div>
+      <div class="pc-sub">Same-day cash</div>
+      <div class="pc-pts">+50 pts</div>
+    </div>
+    <div class="product-card" onclick="showAirtimeShop()">
+      <div class="pc-icon" style="background:#E6F1FB;font-size:22px">📱</div>
+      <div class="pc-name">Airtime & Data</div>
+      <div class="pc-sub">Buy at great member rates</div>
+      <div class="pc-pts" style="background:#E6F1FB;color:#185FA5">🛒 Shop now</div>
+    </div>
+    <div class="product-card" onclick="startApp('medical')">
+      <div class="pc-icon" style="background:#FEF2F2;font-size:22px">❤️</div>
+      <div class="pc-name">Medical Aid</div>
+      <div class="pc-sub">Family cover</div>
+      <div class="pc-pts">+300 pts</div>
+    </div>
+    <div class="product-card" onclick="startApp('insurance')">
+      <div class="pc-icon" style="background:#E1F5EE;font-size:22px">🛡️</div>
+      <div class="pc-name">Insurance</div>
+      <div class="pc-sub">Life & funeral</div>
+      <div class="pc-pts">+100 pts</div>
+    </div>
+    <div class="product-card" onclick="startApp('diamond')">
+      <div class="pc-icon" style="background:#EEEDFE;font-size:22px">💎</div>
+      <div class="pc-name">Diamond Card</div>
+      <div class="pc-sub">VIP cashback</div>
+      <div class="pc-pts">+200 pts</div>
+    </div>
+  </div>
+
+  <!-- LOYALTY SPONSORS -->
+  <div style="max-width:900px;margin:0 auto;padding:8px 24px 0">
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:2px;margin-bottom:5px">Loyalty sponsors &amp; partners</div>
+      <div style="font-size:13px;color:var(--muted)">Earn bonus points and exclusive member deals with our partners</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=&apos;#C41E1E&apos;" onmouseout="this.style.borderColor=&apos;var(--border)&apos;">
+        <img src="/shoprite.png" alt="Shoprite" style="height:38px;width:auto;object-fit:contain;border-radius:4px;flex-shrink:0">
+        <div>
+          <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px">Shoprite</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:5px">2&times; points on grocery spend &middot; Member-exclusive discounts in-store</div>
+          <span style="font-size:11px;padding:2px 9px;background:#EAF3DE;color:#3B6D11;border-radius:10px;font-weight:500">&check; Partner benefit active</span>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=&apos;#C41E1E&apos;" onmouseout="this.style.borderColor=&apos;var(--border)&apos;">
+        <img src="/sportingbet.png" alt="Sportingbet" style="height:38px;width:auto;object-fit:contain;border-radius:4px;flex-shrink:0">
+        <div>
+          <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px">Sportingbet</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:5px">Redeem loyalty points &middot; Member-only promotions and offers</div>
+          <span style="font-size:11px;padding:2px 9px;background:#E6F1FB;color:#185FA5;border-radius:10px;font-weight:500">&check; Partner benefit active</span>
+        </div>
+      </div>
+    </div>
+    <div style="border:1.5px dashed var(--border);border-radius:10px;padding:14px;text-align:center;background:var(--bg)">
+      <div style="font-size:13px;color:var(--muted)">&nbsp; <strong>Become a loyalty sponsor</strong> &mdash; reach 250,000 union members &nbsp;&middot;&nbsp; <a href="mailto:david@cccis.space" style="color:#C41E1E;text-decoration:none;font-weight:500">Contact us</a></div>
+    </div>
+  </div>
+
+  <!-- PHASE 2 COMING SOON -->
+  <div style="max-width:900px;margin:20px auto 40px;padding:0 24px">
+    <div style="background:var(--dark);border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+      <div>
+        <div style="font-size:10px;color:#C41E1E;text-transform:uppercase;letter-spacing:2px;margin-bottom:5px">Coming in Version 2.0</div>
+        <div style="font-size:15px;font-weight:500;color:#fff;margin-bottom:4px">Vehicle Finance &amp; Home Loans</div>
+        <div style="font-size:12px;color:#555;line-height:1.6">Full bond finance with FLISP subsidy, union top-up benefit, and vehicle finance up to 72 months &mdash; launching in Phase 2.</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-shrink:0">
+        <div style="text-align:center;padding:12px 18px;background:#1a1a1a;border-radius:8px;border:1px solid #2a2a2a">
+          <div style="font-size:20px;margin-bottom:4px">&#128663;</div>
+          <div style="font-size:11px;color:#555">Vehicle Finance</div>
+        </div>
+        <div style="text-align:center;padding:12px 18px;background:#1a1a1a;border-radius:8px;border:1px solid #2a2a2a">
+          <div style="font-size:20px;margin-bottom:4px">&#127968;</div>
+          <div style="font-size:11px;color:#555">Home Loans</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════
+     APPLICATION FORM
+═══════════════════════════════════════════ -->
+<div id="page-apply" class="page">
+  <div class="app-wrap">
+    <div style="padding:10px 0 0;margin-bottom:-8px">
+      <button onclick="showPage('home')" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:0;font-family:inherit">← All products</button>
+    </div>
+    <div class="app-header" id="appHeader"></div>
+    <div class="form-card" id="formBody"></div>
+    <div class="form-nav">
+      <div>
+        <button class="btn btn-ghost" id="btnBack" onclick="prevStep()" style="display:none">← Back</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span class="fn-info" id="stepInfo"></span>
+        <button class="btn btn-primary" id="btnNext" onclick="nextStep()">Continue →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SUCCESS
+═══════════════════════════════════════════ -->
+<div id="page-success" class="page">
+  <div class="success-wrap">
+    <div class="success-ic">✓</div>
+    <div class="success-title">Application submitted!</div>
+    <div class="success-sub" id="successSub"></div>
+    <div class="ref-tag" id="successRef"></div><br><br>
+    <div class="pts-badge" id="successPts"></div>
+    <div class="email-note" id="emailNote"></div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="showPage('home')">Apply for another product</button>
+      <button class="btn" onclick="showPage('dashboard')">View my dashboard</button>
+      <button class="btn btn-ghost" onclick="showPage('admin')">Admin portal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     REGISTER
+═══════════════════════════════════════════ -->
+<div id="page-register" class="page">
+  <div class="auth-page">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <div class="auth-logo-mark">RC</div>
+        <span class="auth-logo-text">RAOUL CAPITAL</span>
+      </div>
+      <div class="auth-title">Create your account</div>
+      <div class="auth-sub">Join the union loyalty programme. It's free and takes 2 minutes.</div>
+      <div class="auth-error" id="regError"></div>
+      <div class="auth-row">
+        <div class="auth-field"><label>First name *</label><input id="regFirst" placeholder="First name"></div>
+        <div class="auth-field"><label>Last name *</label><input id="regLast" placeholder="Last name"></div>
+      </div>
+      <div class="auth-field"><label>Email address *</label><input id="regEmail" type="email" placeholder="your@email.com"></div>
+      <div class="auth-field"><label>Mobile number *</label><input id="regMobile" type="tel" placeholder="e.g. 082 345 6789"></div>
+      <div class="auth-field"><label>SA ID number</label><input id="regId" placeholder="13-digit ID number" maxlength="13"></div>
+      <div class="auth-field">
+        <label>Union affiliation *</label>
+        <select id="regUnion">
+          <option value="">Select your union</option>
+          <option>POPCRU</option><option>NEHAWU</option><option>NUMSA</option>
+          <option>COSATU</option><option>SAFTU</option><option>Other</option>
+        </select>
+      </div>
+      <div class="auth-row">
+        <div class="auth-field"><label>Password *</label><input id="regPass" type="password" placeholder="Min 6 characters"></div>
+        <div class="auth-field"><label>Confirm password *</label><input id="regPass2" type="password" placeholder="Repeat password"></div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6">
+        By registering you agree to our <span style="color:var(--red);cursor:pointer">Terms of Service</span> and <span style="color:var(--red);cursor:pointer">Privacy Policy</span>.
+      </div>
+      <button class="auth-btn auth-btn-primary" id="regBtn" onclick="doRegister()">Create account →</button>
+      <button class="auth-btn auth-btn-ghost" onclick="showPage('home')">← Back to home</button>
+      <div class="auth-switch">Already have an account? <a onclick="showPage('login')">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     LOGIN
+═══════════════════════════════════════════ -->
+<div id="page-login" class="page">
+  <div class="auth-page">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <div class="auth-logo-mark">RC</div>
+        <span class="auth-logo-text">RAOUL CAPITAL</span>
+      </div>
+      <div style="display:flex;gap:0;margin-bottom:20px;border:1px solid var(--border);border-radius:8px;overflow:hidden">
+        <button id="tabMember" onclick="switchLoginTab('member')" style="flex:1;padding:9px;font-size:13px;border:none;background:#C41E1E;color:#fff;cursor:pointer;font-family:inherit;font-weight:500">Member login</button>
+        <button id="tabAdmin" onclick="switchLoginTab('admin')" style="flex:1;padding:9px;font-size:13px;border:none;background:var(--bg);color:var(--muted);cursor:pointer;font-family:inherit">Admin login</button>
+      </div>
+      <div class="auth-title" id="loginTitle">Welcome back</div>
+      <div class="auth-sub" id="loginSub">Sign in to your union loyalty account to apply for products and track your rewards.</div>
+      <div class="auth-error" id="loginError"></div>
+      <div class="auth-field"><label>Email address</label><input id="loginEmail" type="email" placeholder="your@email.com"></div>
+      <div class="auth-field"><label>Password</label><input id="loginPass" type="password" placeholder="Your password"></div>
+      <button class="auth-btn auth-btn-primary" id="loginBtn" onclick="doLogin()">Sign in →</button>
+      <div class="auth-switch">Not a member yet? <a onclick="showPage('register')">Register free</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MEMBER DASHBOARD
+═══════════════════════════════════════════ -->
+<div id="page-dashboard" class="page">
+  <div class="dash-wrap">
+    <div id="dashStatusBanner"></div>
+    <div class="dash-hero" id="dashHero">
+      <div class="dash-avatar" id="dashAvatar">?</div>
+      <div style="flex:1">
+        <div class="dash-name" id="dashName">—</div>
+        <div class="dash-meta" id="dashMeta">—</div>
+        <div class="dash-badges">
+          <span class="dash-badge" id="dashTierBadge">—</span>
+          <span class="dash-badge" style="background:#1a1a1a;color:#888" id="dashIdBadge">—</span>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div class="dash-pts" id="dashPts">0</div>
+        <div class="dash-pts-lbl">LOYALTY PTS</div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-card-title">My applications</div>
+        <div id="dashApps"><div style="font-size:13px;color:var(--muted);padding:12px 0">No applications yet — apply for your first product below.</div></div>
+        <button id="dashApplyBtn" class="dash-apply-btn" onclick="showPage('home')">+ Apply for a product</button>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-title">Loyalty points</div>
+        <div style="font-size:32px;font-weight:500;color:var(--gold);margin-bottom:4px" id="dashPtsLarge">0</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:16px">≈ R<span id="dashCashback">0</span> cashback value</div>
+
+        <div style="margin-bottom:6px;display:flex;justify-content:space-between;font-size:12px;color:var(--muted)">
+          <span>Bronze</span><span>Gold (1,000)</span><span>Diamond (2,000)</span>
+        </div>
+        <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:16px">
+          <div id="dashTierBar" style="height:6px;background:var(--red);border-radius:3px;transition:width .5s;width:0%"></div>
+        </div>
+
+        <div class="dash-card-title" style="margin-top:4px">Points history</div>
+        <div id="dashHistory">
+          <div class="dash-app-row">
+            <div class="dash-app-icon" style="background:var(--green-bg)">⭐</div>
+            <div><div class="dash-app-name">Welcome bonus</div><div class="dash-app-ref">Joined Raoul Capital</div></div>
+            <span style="color:var(--green);font-weight:500;font-size:13px">+100</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="dash-signout" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+</div>
+
+<!-- QR CODE PAGE -->
+<div id="page-qr" class="page">
+  <div style="min-height:calc(100vh - 52px);background:var(--dark);display:flex;align-items:center;justify-content:center;padding:32px">
+    <div style="background:#fff;border-radius:20px;padding:40px;max-width:520px;width:100%;text-align:center">
+      <div style="display:inline-block;padding:8px 16px;margin-bottom:24px;border:1px solid var(--border);border-radius:10px">
+        <img src="/logo.png" alt="Raoul Capital" style="height:40px;width:auto;display:block">
+      </div>
+      <h2 style="font-size:22px;font-weight:500;margin-bottom:6px">Join Raoul Capital</h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6">Scan this QR code to register as a union member and access exclusive financial products and loyalty rewards.</p>
+      <div style="background:var(--bg);border-radius:16px;padding:20px;display:inline-block;margin-bottom:20px;border:1px solid var(--border)">
+        <canvas id="qrCanvas" style="width:200px;height:200px;display:block;border-radius:8px"></canvas>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:12px 16px;margin-bottom:20px;border:1px solid var(--border)">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.8px">Registration link</div>
+        <div id="qrUrl" style="font-size:13px;color:var(--red);font-family:monospace;word-break:break-all">http://localhost:3000/#register</div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:24px">
+        <button onclick="downloadQR()" class="btn btn-primary" style="padding:10px 20px">⬇ Download QR</button>
+        <button class="btn" onclick="window.print()">🖨 Print</button>
+        <button class="btn btn-ghost" onclick="showPage('home')">← Back</button>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:20px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:500">Update URL when going live</div>
+        <div style="display:flex;gap:8px">
+          <input id="liveUrl" type="url" placeholder="https://your-live-url.com" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+          <button class="btn btn-primary" onclick="updateQRUrl()">Update QR</button>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px">Once your site is hosted, paste the live URL here to regenerate the QR code.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-admin" class="page">
+  <div class="admin-wrap">
+    <div class="admin-sidebar">
+      <div class="as-section">Dashboard</div>
+      <button class="as-item active" onclick="adminTab('overview',this)">📊 Overview</button>
+      <button class="as-item" onclick="adminTab('members',this)">👥 Members <span class="as-count" id="pendingCount">0</span></button>
+      <button class="as-item" onclick="adminTab('applications',this)">📋 Applications <span class="as-count" id="appCount">0</span></button>
+      <div class="as-section">Filter by</div>
+      <button class="as-item" onclick="adminFilter('new',this)">🔵 New</button>
+      <button class="as-item" onclick="adminFilter('callback',this)">🟡 Callback</button>
+      <button class="as-item" onclick="adminFilter('approved',this)">🟢 Approved</button>
+      <div class="as-section">Products</div>
+      <button class="as-item" onclick="adminFilter('payday',this)">💵 Payday Loans</button>
+      <button class="as-item" onclick="adminFilter('airtime',this)">📱 Airtime & Data</button>
+      <button class="as-item" onclick="adminFilter('medical',this)">❤️ Medical Aid</button>
+      <button class="as-item" onclick="adminFilter('insurance',this)">🛡️ Insurance</button>
+      <button class="as-item" onclick="adminFilter('diamond',this)">💎 Diamond Card</button>
+    </div>
+    <div class="admin-main">
+      <div id="adminContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = window.location.origin;
+let curApp = null, curStep = 0, formData = {};
+let adminView = 'overview', adminFilterVal = null;
+let currentUser = null;
+
+/* ══════════ PAGE ROUTING ══════════ */
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  if(p==='admin') loadAdmin();
+  if(p==='dashboard') renderDashboard();
+  window.scrollTo(0,0);
+  // Hide sign in / register buttons on apply and success pages — clean form experience
+  const navLinks = document.getElementById('navLinks');
+  const hideNav = (p==='apply' || p==='success');
+  if(navLinks && !currentUser) navLinks.style.display = hideNav ? 'none' : 'flex';
+}
+
+/* ══════════ AUTH ══════════ */
+function updateNavAuth(){
+  if(currentUser){
+    document.getElementById('navLinks').style.display='none';
+    document.getElementById('navMember').style.display='flex';
+    const isAdmin = currentUser.role === 'admin';
+    document.getElementById('memberLabel').textContent = isAdmin
+      ? `⚙️ Admin — ${currentUser.firstName} ${currentUser.lastName}`
+      : `${currentUser.firstName} ${currentUser.lastName} · ${currentUser.tier}`;
+    document.getElementById('navDashBtn').style.display = isAdmin ? 'none' : 'inline';
+    document.getElementById('navAdminBtn').style.display = isAdmin ? 'inline' : 'none';
+  } else {
+    document.getElementById('navLinks').style.display='flex';
+    document.getElementById('navMember').style.display='none';
+  }
+}
+
+async function doRegister(){
+  const btn = document.getElementById('regBtn');
+  const err = document.getElementById('regError');
+  const first=document.getElementById('regFirst').value.trim();
+  const last=document.getElementById('regLast').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const mobile=document.getElementById('regMobile').value.trim();
+  const id=document.getElementById('regId').value.trim();
+  const union=document.getElementById('regUnion').value;
+  const pass=document.getElementById('regPass').value;
+  const pass2=document.getElementById('regPass2').value;
+  err.classList.remove('show');
+  if(!first||!last||!email||!mobile||!union||!pass){err.textContent='Please fill in all required fields.';err.classList.add('show');return;}
+  if(pass!==pass2){err.textContent='Passwords do not match.';err.classList.add('show');return;}
+  if(pass.length<6){err.textContent='Password must be at least 6 characters.';err.classList.add('show');return;}
+  btn.textContent='Submitting...';btn.disabled=true;
+  try{
+    const res=await fetch(`${API}/api/register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({firstName:first,lastName:last,email,mobile,idNumber:id,union,password:pass})});
+    const data=await res.json();
+    if(!res.ok){err.textContent=data.error||'Registration failed.';err.classList.add('show');btn.textContent='Create account →';btn.disabled=false;return;}
+    currentUser=data.user;
+    updateNavAuth();
+    showToast(`Application submitted! We'll email you once approved.`,'success');
+    showPage('dashboard');
+  }catch(e){err.textContent='Server error — is the server running?';err.classList.add('show');}
+  btn.textContent='Create account →';btn.disabled=false;
+}
+
+async function doLogin(){
+  const btn=document.getElementById('loginBtn');
+  const err=document.getElementById('loginError');
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  err.classList.remove('show');
+  if(!email||!pass){err.textContent='Please enter your email and password.';err.classList.add('show');return;}
+  btn.textContent='Signing in...';btn.disabled=true;
+  try{
+    const res=await fetch(`${API}/api/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+    const data=await res.json();
+    if(!res.ok){err.textContent=data.error||'Invalid credentials.';err.classList.add('show');btn.textContent='Sign in →';btn.disabled=false;return;}
+    currentUser=data.user;
+    updateNavAuth();
+    // Admin users go straight to admin portal
+    if(currentUser.role === 'admin'){
+      showToast(`Welcome, Admin ${currentUser.firstName}!`,'success');
+      showPage('admin');
+    } else {
+      showToast(`Welcome back, ${currentUser.firstName}!`,'success');
+      showPage('dashboard');
+    }
+  }catch(e){err.textContent='Server error — is the server running?';err.classList.add('show');}
+  btn.textContent='Sign in →';btn.disabled=false;
+}
+
+function signOut(){
+  currentUser=null;
+  updateNavAuth();
+  showPage('home');
+  showToast('Signed out successfully','success');
+}
+
+async function updateQRUrl(){
+  const url = document.getElementById('liveUrl').value.trim();
+  if(!url){ showToast('Please enter a URL','error'); return; }
+  try {
+    const res = await fetch(`${API}/api/qr/update`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});
+    const data = await res.json();
+    if(data.success){
+      generateQR(url);
+      document.getElementById('qrUrl').textContent = url;
+      showToast('QR code updated successfully ✓','success');
+    }
+  } catch(e){ showToast('Update failed — is the server running?','error'); }
+}
+
+/* ══════════ DASHBOARD ══════════ */
+function renderDashboard(){
+  if(!currentUser){showPage('login');return;}
+  const u=currentUser;
+  const initials=(u.firstName[0]+(u.lastName[0]||'')).toUpperCase();
+  document.getElementById('dashAvatar').textContent=initials;
+  document.getElementById('dashName').textContent=`${u.firstName} ${u.lastName}`;
+  document.getElementById('dashMeta').textContent=`${u.union} · ${u.memberId} · ${u.email}`;
+  document.getElementById('dashPts').textContent=(u.points||100).toLocaleString();
+  document.getElementById('dashPtsLarge').textContent=(u.points||100).toLocaleString();
+  document.getElementById('dashCashback').textContent=Math.round((u.points||100)*0.1).toLocaleString();
+  const pct=Math.min(100,Math.round((u.points||100)/2000*100));
+  document.getElementById('dashTierBar').style.width=pct+'%';
+  const tierEl=document.getElementById('dashTierBadge');
+  const tier=u.tier||'Bronze';
+  tierEl.textContent=tier+' member';
+  tierEl.className='dash-badge '+(tier==='Diamond'?'dash-tier-diamond':tier==='Gold'?'dash-tier-gold':'dash-tier-bronze');
+  document.getElementById('dashIdBadge').textContent=u.memberId;
+
+  // ── Membership status banner ──
+  const status = u.status || 'pending';
+  const bannerEl = document.getElementById('dashStatusBanner');
+  if(status === 'pending'){
+    bannerEl.innerHTML=`<div style="background:#FAEEDA;border:1px solid #f5d9a8;border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:16px">
+      <div style="font-size:24px">⏳</div>
+      <div>
+        <div style="font-size:14px;font-weight:500;color:#633806">Membership pending approval</div>
+        <div style="font-size:12px;color:#854F0B;margin-top:2px">Your application is being reviewed by our admin team. You'll receive an email once approved — usually within 24 hours. You can log in and browse but cannot submit applications until approved.</div>
+      </div>
+    </div>`;
+  } else if(status === 'approved'){
+    bannerEl.innerHTML=`<div style="background:#EAF3DE;border:1px solid #b6d98a;border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <div style="font-size:20px">✅</div>
+      <div style="font-size:13px;font-weight:500;color:#3B6D11">Membership approved — you have full access to all products and benefits.</div>
+    </div>`;
+  } else if(status === 'rejected'){
+    bannerEl.innerHTML=`<div style="background:#FEF2F2;border:1px solid #fecaca;border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:16px">
+      <div style="font-size:24px">❌</div>
+      <div>
+        <div style="font-size:14px;font-weight:500;color:#7F1D1D">Membership not approved</div>
+        <div style="font-size:12px;color:#991B1B;margin-top:2px">${u.rejectionReason||'Your application could not be approved at this time.'} Please contact <strong>david@cccis.space</strong> to appeal or for more information.</div>
+      </div>
+    </div>`;
+  }
+
+  // Always show apply button for demo — pending members see a note but can still apply
+  const applyBtn = document.getElementById('dashApplyBtn');
+  if(applyBtn) applyBtn.style.display = 'block';
+  if(applyBtn && status==='pending') applyBtn.textContent = '+ Apply for a product (pending approval)';
+  if(applyBtn && status==='approved') applyBtn.textContent = '+ Apply for a product';
+
+  const apps=u.applications||[];
+  const labels={payday:'💵 Payday Loan',airtime:'📱 Airtime & Data',medical:'❤️ Medical Aid',insurance:'🛡️ Insurance',diamond:'💎 Diamond Card'};
+  const colors={payday:'#EAF3DE',airtime:'#E6F1FB',medical:'#FEF2F2',insurance:'#E1F5EE',diamond:'#EEEDFE'};
+  const statusColors={new:'sb-new',approved:'sb-approved',callback:'sb-callback',rejected:'sb-rejected'};
+  if(apps.length===0){
+    document.getElementById('dashApps').innerHTML='<div style="font-size:13px;color:var(--muted);padding:12px 0">No applications yet — apply for your first product below.</div>';
+  } else {
+    document.getElementById('dashApps').innerHTML=apps.map(a=>`
+      <div class="dash-app-row">
+        <div class="dash-app-icon" style="background:${colors[a.type]||'#f5f5f5'}">${(labels[a.type]||'📋').split(' ')[0]}</div>
+        <div style="flex:1">
+          <div class="dash-app-name">${(labels[a.type]||a.type).split(' ').slice(1).join(' ')}</div>
+          <div class="dash-app-ref">${a.ref} · ${new Date(a.submittedAt).toLocaleDateString('en-ZA')}</div>
+        </div>
+        <span class="status-badge ${statusColors[a.status]||'sb-new'}">${a.status}</span>
+      </div>`).join('');
+  }
+
+  const history=document.getElementById('dashHistory');
+  let histHTML=`<div class="dash-app-row"><div class="dash-app-icon" style="background:var(--green-bg)">⭐</div><div><div class="dash-app-name">Welcome bonus</div><div class="dash-app-ref">Joined Raoul Capital</div></div><span style="color:var(--green);font-weight:500;font-size:13px">+100</span></div>`;
+  apps.forEach(a=>{histHTML+=`<div class="dash-app-row"><div class="dash-app-icon" style="background:${colors[a.type]||'#f5f5f5'}">${(labels[a.type]||'📋').split(' ')[0]}</div><div><div class="dash-app-name">${(labels[a.type]||a.type).split(' ').slice(1).join(' ')} application</div><div class="dash-app-ref">${a.ref}</div></div><span style="color:var(--green);font-weight:500;font-size:13px">+${a.pts}</span></div>`;});
+  history.innerHTML=histHTML;
+}
+
+
+/* ══════════ PRODUCT CONFIG ══════════ */
+const APPS = {
+  payday:{label:'Payday loan',sub:'Same-day cash — repaid on your next salary date',icon:'💵',iconBg:'#EAF3DE',pts:50,
+    steps:['Amount & purpose','Your details','Banking','Review & submit'],
+    render(s,d){
+      const amt = d.amount||3000;
+      if(s===0) return `
+        <div class="s-head">How much do you need?</div>
+        <div class="fg fg1" style="margin-bottom:16px">
+          <div class="field">
+            <label>Loan amount: <strong>R<span id="amtDisp">${amt.toLocaleString()}</span></strong></label>
+            <input type="range" min="500" max="10000" step="500" value="${amt}" id="amtRange" oninput="fmtAmt(this.value)">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted)"><span>R500</span><span>R10,000</span></div>
+          </div>
+        </div>
+        <div class="calc-box">
+          <div class="c-row"><span>Loan amount</span><span id="c1">R${amt.toLocaleString()}</span></div>
+          <div class="c-row"><span>Service fee (5%)</span><span id="c2">R${Math.round(amt*.05).toLocaleString()}</span></div>
+          <div class="c-row"><span>Diamond member cashback</span><span class="c-good" id="c3">–R${Math.round(amt*.005).toLocaleString()}</span></div>
+          <div class="c-row"><span>Total repayment</span><span id="c4">R${Math.round(amt*1.045).toLocaleString()}</span></div>
+        </div>
+        <div class="fg fg2">
+          <div class="field"><label>Repayment date</label><input type="date" id="repDate" value="2026-05-30"></div>
+          <div class="field"><label>Purpose</label>
+            <select id="purpose"><option>Living expenses</option><option>Medical emergency</option><option>School fees</option><option>Utilities</option><option>Other</option></select>
+          </div>
+        </div>`;
+      if(s===1) return `
+        <div class="s-head">Personal details</div>
+        <div class="fg fg2">
+          <div class="field"><label>First name *</label><input id="firstName" value="${d.firstName||'David'}" placeholder="First name"></div>
+          <div class="field"><label>Last name *</label><input id="lastName" value="${d.lastName||'Pashe'}" placeholder="Last name"></div>
+          <div class="field"><label>SA ID number *</label><input id="idNumber" value="${d.idNumber||''}" placeholder="13-digit ID"></div>
+          <div class="field"><label>Mobile *</label><input id="mobile" value="${d.mobile||'0823456789'}" placeholder="0800000000"></div>
+          <div class="field"><label>Email (for confirmation)</label><input id="email" type="email" value="${d.email||''}" placeholder="your@email.com"></div>
+          <div class="field"><label>Union affiliation</label>
+            <select id="union"><option>POPCRU</option><option>NEHAWU</option><option>NUMSA</option><option>COSATU</option><option>Other</option></select>
+          </div>
+          <div class="field"><label>Employer</label><input id="employer" value="${d.employer||''}" placeholder="Company name"></div>
+          <div class="field"><label>Net monthly salary (R)</label><input id="salary" value="${d.salary||''}" placeholder="e.g. 12000" type="number"></div>
+        </div>`;
+      if(s===2) return `
+        <div class="s-head">Banking details</div>
+        <div class="fg fg2">
+          <div class="field"><label>Bank</label>
+            <select id="bank"><option>Absa</option><option>FNB</option><option>Standard Bank</option><option>Nedbank</option><option>Capitec</option><option>African Bank</option></select>
+          </div>
+          <div class="field"><label>Account type</label><select id="accType"><option>Cheque / Current</option><option>Savings</option></select></div>
+          <div class="field"><label>Account number *</label><input id="accNum" value="${d.accNum||''}" placeholder="Account number"></div>
+          <div class="field"><label>Branch code</label><input id="branchCode" value="${d.branchCode||''}" placeholder="6-digit code"></div>
+        </div>
+        <div class="s-head">Documents</div>
+        <div class="doc-row"><div class="doc-ic">📄</div><div class="doc-name">Latest payslip</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">🏦</div><div class="doc-name">3-month bank statement</div><span class="doc-badge db-req">Required</span></div>
+        <div class="upload-zone"><div class="uz-icon">☁️</div><p>Tap to upload documents (demo — not required)</p></div>`;
+      if(s===3){
+        const a = d.amount||3000;
+        return `
+        <div class="s-head">Review your application</div>
+        <div class="calc-box">
+          <div class="c-row"><span>Applicant</span><span>${d.firstName||'David'} ${d.lastName||'Pashe'}</span></div>
+          <div class="c-row"><span>Loan amount</span><span>R${a.toLocaleString()}</span></div>
+          <div class="c-row"><span>Total repayment</span><span>R${Math.round(a*1.045).toLocaleString()}</span></div>
+          <div class="c-row"><span>Repayment date</span><span>${d.repDate||'30 May 2026'}</span></div>
+          <div class="c-row"><span>Union</span><span>${d.union||'POPCRU'}</span></div>
+          <div class="c-row"><span>Loyalty points earned</span><span class="c-good">+50 pts</span></div>
+        </div>
+        <div class="check-item"><input type="checkbox" id="ck1" checked><div class="ci-text">I confirm all information is accurate<div class="ci-sub">Submitting false information is an offence under the NCA</div></div></div>
+        <div class="check-item"><input type="checkbox" id="ck2" checked><div class="ci-text">I authorise a debit order on the repayment date</div></div>`;
+      }
+    },
+    collect(s,d){
+      if(s===0){d.amount=parseInt(document.getElementById('amtRange')?.value||3000);d.repDate=document.getElementById('repDate')?.value;d.purpose=document.getElementById('purpose')?.value}
+      if(s===1){['firstName','lastName','idNumber','mobile','email','union','employer','salary'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value})}
+      if(s===2){['bank','accType','accNum','branchCode'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value})}
+    }
+  },
+
+  airtime:{label:'Airtime & Data',sub:'Great rates for members — free with any insurance product',icon:'📱',iconBg:'#E6F1FB',pts:30,
+    steps:['Choose bundle','Your details','Confirm'],
+    render(s,d){
+      if(s===0) return `
+        <div class="s-head">Select your bundle</div>
+        <div style="background:#E6F1FB;border-radius:8px;padding:12px 14px;margin-bottom:16px;border-left:3px solid #185FA5">
+          <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:3px">🎁 FREE with any insurance product</div>
+          <div style="font-size:12px;color:#6b6964">Take out any Raoul Capital insurance product and your monthly airtime & data bundle is included at no extra cost.</div>
+        </div>
+        <div class="s-head">Airtime bundles</div>
+        <div style="display:grid;gap:8px;margin-bottom:16px">
+          ${[
+            {name:'Basic Airtime',val:'R 50',sub:'R50 airtime · Any network',pts:10},
+            {name:'Standard Airtime',val:'R 100',sub:'R100 airtime · Any network',pts:20},
+            {name:'Premium Airtime',val:'R 200',sub:'R200 airtime · Any network',pts:30},
+          ].map(b=>`<div class="check-item" onclick="selBundle(this,'airtime_${b.val}')" style="justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:32px;height:32px;background:#E6F1FB;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px">📞</div>
+              <div><div class="ci-text">${b.name}</div><div class="ci-sub">${b.sub}</div></div>
+            </div>
+            <div style="text-align:right"><div style="font-size:16px;font-weight:500;color:#C41E1E">${b.val}</div><div style="font-size:10px;color:#3B6D11">+${b.pts} pts</div></div>
+          </div>`).join('')}
+        </div>
+        <div class="s-head">Data bundles</div>
+        <div style="display:grid;gap:8px">
+          ${[
+            {name:'1GB Data',val:'R 49',sub:'Valid 30 days · Any network',pts:10},
+            {name:'3GB Data',val:'R 99',sub:'Valid 30 days · Any network',pts:20},
+            {name:'10GB Data',val:'R 199',sub:'Valid 30 days · Any network',pts:30},
+            {name:'20GB Data',val:'R 299',sub:'Valid 30 days · Uncapped night data',pts:50},
+          ].map(b=>`<div class="check-item" onclick="selBundle(this,'data_${b.val}')" style="justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:32px;height:32px;background:#E6F1FB;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px">📶</div>
+              <div><div class="ci-text">${b.name}</div><div class="ci-sub">${b.sub}</div></div>
+            </div>
+            <div style="text-align:right"><div style="font-size:16px;font-weight:500;color:#C41E1E">${b.val}</div><div style="font-size:10px;color:#3B6D11">+${b.pts} pts</div></div>
+          </div>`).join('')}
+        </div>`;
+      if(s===1) return `
+        <div class="s-head">Your details</div>
+        <div class="fg fg2">
+          <div class="field"><label>First name *</label><input id="firstName" value="${d.firstName||''}"></div>
+          <div class="field"><label>Last name *</label><input id="lastName" value="${d.lastName||''}"></div>
+          <div class="field"><label>Mobile number to top up *</label><input id="mobile" value="${d.mobile||''}" placeholder="Number to receive airtime/data"></div>
+          <div class="field"><label>Email</label><input id="email" type="email" value="${d.email||''}"></div>
+          <div class="field"><label>Network</label>
+            <select id="network"><option>Vodacom</option><option>MTN</option><option>Cell C</option><option>Telkom</option></select>
+          </div>
+          <div class="field"><label>Union</label>
+            <select id="union"><option>POPCRU</option><option>NEHAWU</option><option>NUMSA</option><option>COSATU</option><option>Other</option></select>
+          </div>
+        </div>
+        <div style="background:#EAF3DE;border-radius:8px;padding:12px 14px;margin-top:8px;border-left:3px solid #3B6D11">
+          <div style="font-size:12px;color:#3B6D11;font-weight:500">💡 Have insurance with us?</div>
+          <div style="font-size:12px;color:#6b6964;margin-top:2px">If you hold an active Raoul Capital insurance product, this bundle is FREE. Our team will verify and apply the benefit automatically.</div>
+        </div>`;
+      if(s===2) return `
+        <div class="s-head">Confirm your order</div>
+        <div class="calc-box">
+          <div class="c-row"><span>Member</span><span>${d.firstName||'—'} ${d.lastName||''}</span></div>
+          <div class="c-row"><span>Mobile number</span><span>${d.mobile||'—'}</span></div>
+          <div class="c-row"><span>Network</span><span>${d.network||'—'}</span></div>
+          <div class="c-row"><span>Bundle selected</span><span>${d.bundle||'—'}</span></div>
+          <div class="c-row"><span>Insurance benefit</span><span style="color:#185FA5">Auto-verified on submission</span></div>
+          <div class="c-row"><span>Loyalty points</span><span class="c-good">+${this.pts} pts</span></div>
+        </div>
+        <div class="check-item"><input type="checkbox" checked><div class="ci-text">I confirm the mobile number is correct and I agree to the terms</div></div>`;
+    },
+    collect(s,d){
+      if(s===1){['firstName','lastName','mobile','email','network','union'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value})}
+    }
+  },
+
+  vehicle:{label:'Vehicle finance',sub:'New or used — flexible terms up to 72 months',icon:'🚗',iconBg:'#EEEDFE',pts:200,
+    steps:['Vehicle details','Affordability','Documents','Review & submit'],
+    render(s,d){
+      if(s===0) return `
+        <div class="s-head">Vehicle information</div>
+        <div class="fg fg2">
+          <div class="field"><label>Vehicle type</label><select id="vType"><option>New</option><option>Used (dealer)</option><option>Used (private)</option></select></div>
+          <div class="field"><label>Make</label><select id="vMake"><option>Toyota</option><option>Volkswagen</option><option>Ford</option><option>Hyundai</option><option>BMW</option><option>Mercedes-Benz</option><option>Kia</option></select></div>
+          <div class="field"><label>Model & year</label><input id="vModel" placeholder="e.g. Hilux 2024"></div>
+          <div class="field"><label>Purchase price (R) *</label><input id="vPrice" type="number" placeholder="e.g. 350000" oninput="calcVehicle()" value="${d.vPrice||''}"></div>
+          <div class="field"><label>Deposit (R)</label><input id="vDeposit" type="number" placeholder="e.g. 50000" oninput="calcVehicle()" value="${d.vDeposit||''}"></div>
+          <div class="field"><label>Term (months)</label><select id="vTerm" onchange="calcVehicle()"><option>36</option><option>48</option><option value="60" selected>60</option><option>72</option></select></div>
+        </div>
+        <div class="calc-box" id="vCalc"><div class="c-row"><span>Enter price above to see estimate</span><span>—</span></div></div>`;
+      if(s===1) return `
+        <div class="s-head">Personal details</div>
+        <div class="fg fg2">
+          <div class="field"><label>First name *</label><input id="firstName" value="${d.firstName||''}"></div>
+          <div class="field"><label>Last name *</label><input id="lastName" value="${d.lastName||''}"></div>
+          <div class="field"><label>SA ID *</label><input id="idNumber" value="${d.idNumber||''}" placeholder="13 digits"></div>
+          <div class="field"><label>Mobile *</label><input id="mobile" value="${d.mobile||''}"></div>
+          <div class="field"><label>Email</label><input id="email" type="email" value="${d.email||''}"></div>
+          <div class="field"><label>Union</label><select id="union"><option>POPCRU</option><option>NEHAWU</option><option>NUMSA</option><option>COSATU</option></select></div>
+        </div>
+        <div class="s-head">Income & affordability</div>
+        <div class="fg fg2">
+          <div class="field"><label>Gross monthly income (R)</label><input id="grossIncome" type="number" placeholder="Before deductions" oninput="calcAfford('vehicle')"></div>
+          <div class="field"><label>Net monthly income (R)</label><input id="netIncome" type="number" placeholder="Take-home" oninput="calcAfford('vehicle')"></div>
+          <div class="field"><label>Monthly obligations (R)</label><input id="obligations" type="number" placeholder="Loans, rent, etc." oninput="calcAfford('vehicle')"></div>
+          <div class="field"><label>Living expenses (R)</label><input id="living" type="number" placeholder="e.g. 5000" oninput="calcAfford('vehicle')"></div>
+        </div>
+        <div class="calc-box">
+          <div class="c-row"><span>Disposable income</span><span id="aDisp">—</span></div>
+          <div class="c-row"><span>Max installment (35% rule)</span><span id="aMax" class="c-good">—</span></div>
+        </div>`;
+      if(s===2) return `
+        <div class="s-head">Required documents</div>
+        <div class="doc-row"><div class="doc-ic">🪪</div><div class="doc-name">SA ID document</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">📄</div><div class="doc-name">3 latest payslips</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">🏦</div><div class="doc-name">6-month bank statement</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">🚗</div><div class="doc-name">Vehicle pro-forma invoice</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">🗺️</div><div class="doc-name">Proof of address</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">🪪</div><div class="doc-name">Driver's licence</div><span class="doc-badge db-opt">Optional</span></div>
+        <div class="upload-zone"><div class="uz-icon">☁️</div><p>Tap to upload (demo — not required)</p></div>`;
+      if(s===3){
+        const price = parseFloat(d.vPrice||350000);
+        const dep = parseFloat(d.vDeposit||0);
+        const loan = price-dep;
+        const rate = 0.1175/12;
+        const term = parseInt(d.vTerm||60);
+        const inst = loan>0?Math.round(loan*rate*Math.pow(1+rate,term)/(Math.pow(1+rate,term)-1)):0;
+        return `
+        <div class="s-head">Application summary</div>
+        <div class="spec-grid">
+          <div class="spec"><div class="spec-lbl">Vehicle</div><div class="spec-val">${d.vMake||'Toyota'} ${d.vModel||''}</div></div>
+          <div class="spec"><div class="spec-lbl">Purchase price</div><div class="spec-val">R${price.toLocaleString()}</div></div>
+          <div class="spec"><div class="spec-lbl">Loan amount</div><div class="spec-val">R${loan.toLocaleString()}</div></div>
+          <div class="spec"><div class="spec-lbl">Monthly installment</div><div class="spec-val">R${inst.toLocaleString()}</div></div>
+        </div>
+        <div class="calc-box">
+          <div class="c-row"><span>Loyalty points earned</span><span class="c-good">+200 pts</span></div>
+        </div>
+        <div class="check-item"><input type="checkbox" checked><div class="ci-text">I consent to a credit bureau enquiry under the NCA</div></div>
+        <div class="check-item"><input type="checkbox" checked><div class="ci-text">All information provided is true and correct</div></div>`;
+      }
+    },
+    collect(s,d){
+      if(s===0){['vType','vMake','vModel','vPrice','vDeposit','vTerm'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value;d.amount=d.vPrice})}
+      if(s===1){['firstName','lastName','idNumber','mobile','email','union','grossIncome','netIncome','obligations','living'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value})}
+    }
+  },
+
+  home:{label:'Home loan',sub:'Bond finance with union benefit & FLISP',icon:'🏠',iconBg:'#FAEEDA',pts:500,
+    steps:['Property','Affordability','Employment','Documents','Review & submit'],
+    render(s,d){
+      if(s===0) return `
+        <div class="s-head">Property details</div>
+        <div class="fg fg2">
+          <div class="field"><label>Property type</label><select id="propType"><option>Freehold house</option><option>Sectional title</option><option>Townhouse</option><option>RDP / state subsidised</option></select></div>
+          <div class="field"><label>Province</label><select id="province"><option>Gauteng</option><option>Western Cape</option><option>KwaZulu-Natal</option><option>Limpopo</option><option>Mpumalanga</option><option>North West</option><option>Eastern Cape</option></select></div>
+          <div class="field"><label>Purchase price (R) *</label><input id="propPrice" type="number" placeholder="e.g. 850000" oninput="calcHome()" value="${d.propPrice||''}"></div>
+          <div class="field"><label>Deposit (R)</label><input id="propDeposit" type="number" placeholder="e.g. 85000" oninput="calcHome()" value="${d.propDeposit||''}"></div>
+          <div class="field"><label>Term (years)</label><select id="propTerm" onchange="calcHome()"><option>10</option><option>15</option><option value="20" selected>20</option><option>25</option><option>30</option></select></div>
+          <div class="field"><label>Property address</label><input id="propAddress" placeholder="Street address"></div>
+        </div>
+        <div class="calc-box" id="homeCalc"><div class="c-row"><span>Enter purchase price to see estimate</span><span>—</span></div></div>`;
+      if(s===1) return `
+        <div class="s-head">Household income</div>
+        <div class="fg fg2">
+          <div class="field"><label>First name *</label><input id="firstName" value="${d.firstName||''}"></div>
+          <div class="field"><label>Last name *</label><input id="lastName" value="${d.lastName||''}"></div>
+          <div class="field"><label>SA ID *</label><input id="idNumber" value="${d.idNumber||''}" placeholder="13 digits"></div>
+          <div class="field"><label>Mobile *</label><input id="mobile" value="${d.mobile||''}"></div>
+          <div class="field"><label>Email</label><input id="email" type="email" value="${d.email||''}"></div>
+          <div class="field"><label>Union</label><select id="union"><option>POPCRU</option><option>NEHAWU</option><option>NUMSA</option><option>COSATU</option></select></div>
+          <div class="field"><label>Gross monthly income (R)</label><input id="grossIncome" type="number" placeholder="Before deductions" oninput="calcHomeAfford()"></div>
+          <div class="field"><label>Net monthly income (R)</label><input id="netIncome" type="number" placeholder="Take-home" oninput="calcHomeAfford()"></div>
+          <div class="field"><label>Total monthly obligations (R)</label><input id="obligations" type="number" placeholder="All loans/expenses" oninput="calcHomeAfford()"></div>
+          <div class="field"><label>Application type</label><select id="appType"><option>Single applicant</option><option>Joint application</option></select></div>
+        </div>
+        <div class="calc-box">
+          <div class="c-row"><span>FLISP subsidy check</span><span id="flispStatus" class="c-good">Likely eligible ✓</span></div>
+          <div class="c-row"><span>Union housing top-up</span><span class="c-good">+R12,000 applied</span></div>
+          <div class="c-row"><span>Max qualifying bond</span><span id="maxBond" class="c-good">—</span></div>
+        </div>`;
+      if(s===2) return `
+        <div class="s-head">Employment history</div>
+        <div class="fg fg2">
+          <div class="field"><label>Employment status</label><select id="empStatus"><option>Permanently employed</option><option>Contract (24+ months)</option><option>Government / public sector</option><option>Self-employed</option></select></div>
+          <div class="field"><label>Years at current employer</label><input id="yearsEmployed" type="number" placeholder="e.g. 5"></div>
+          <div class="field"><label>Employer name</label><input id="employer" placeholder="Company / department"></div>
+          <div class="field"><label>Job title</label><input id="jobTitle" placeholder="e.g. Senior officer"></div>
+        </div>
+        <div class="s-head">Credit profile</div>
+        <div class="fg fg1">
+          <div class="field"><label>Have you ever been sequestrated or had a judgement?</label>
+            <div class="radio-row"><div class="ropt sel" onclick="selRadio(this,'seq')">No</div><div class="ropt" onclick="selRadio(this,'seq')">Yes — explain below</div></div>
+          </div>
+          <div class="field"><label>Explanation (if yes)</label><textarea placeholder="Details and resolution..."></textarea></div>
+        </div>
+        <div class="check-item"><input type="checkbox"><div class="ci-text">Transfer costs and conveyancing covered<div class="ci-sub">Approx. R20,000–R35,000 depending on property value</div></div></div>
+        <div class="check-item"><input type="checkbox"><div class="ci-text">Home insurance arranged (required for bond)</div></div>`;
+      if(s===3) return `
+        <div class="s-head">Required documents</div>
+        <div class="doc-row"><div class="doc-ic">🪪</div><div class="doc-name">SA ID (certified copy)</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">📄</div><div class="doc-name">3 latest payslips</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">🏦</div><div class="doc-name">6-month bank statements</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">🏠</div><div class="doc-name">Offer to purchase (OTP)</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">🗺️</div><div class="doc-name">Proof of address</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">📋</div><div class="doc-name">FLISP application form</div><span class="doc-badge db-opt">If applicable</span></div>
+        <div class="upload-zone"><div class="uz-icon">☁️</div><p>Tap to upload (demo — not required)</p></div>`;
+      if(s===4){
+        const price = parseFloat(d.propPrice||850000);
+        const dep = parseFloat(d.propDeposit||85000);
+        const loan = price-dep;
+        const rate = 0.1175/12;
+        const term = parseInt(d.propTerm||20)*12;
+        const bond = loan>0?Math.round(loan*rate*Math.pow(1+rate,term)/(Math.pow(1+rate,term)-1)):0;
+        return `
+        <div class="s-head">Final review</div>
+        <div class="spec-grid">
+          <div class="spec"><div class="spec-lbl">Property price</div><div class="spec-val">R${price.toLocaleString()}</div></div>
+          <div class="spec"><div class="spec-lbl">Loan amount</div><div class="spec-val">R${loan.toLocaleString()}</div></div>
+          <div class="spec"><div class="spec-lbl">Monthly bond</div><div class="spec-val">R${bond.toLocaleString()}</div></div>
+          <div class="spec"><div class="spec-lbl">Term</div><div class="spec-val">${d.propTerm||20} years</div></div>
+        </div>
+        <div class="calc-box">
+          <div class="c-row"><span>Union housing top-up</span><span class="c-good">R12,000 applied</span></div>
+          <div class="c-row"><span>Loyalty points</span><span class="c-good">+500 pts</span></div>
+        </div>
+        <div class="check-item"><input type="checkbox"><div class="ci-text">I consent to a full credit bureau assessment</div></div>
+        <div class="check-item"><input type="checkbox"><div class="ci-text">All information is correct and complete</div></div>`;
+      }
+    },
+    collect(s,d){
+      if(s===0){['propType','province','propPrice','propDeposit','propTerm','propAddress'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value});d.amount=d.propPrice}
+      if(s===1){['firstName','lastName','idNumber','mobile','email','union','grossIncome','netIncome','obligations','appType'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value})}
+      if(s===2){['empStatus','yearsEmployed','employer','jobTitle'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value})}
+    }
+  },
+
+  medical:{label:'Medical aid',sub:'Comprehensive health cover for you and your family',icon:'❤️',iconBg:'#FEF2F2',pts:300,
+    steps:['Members','Health profile','Choose plan','Documents','Review & submit'],
+    render(s,d){
+      if(s===0) return `
+        <div class="s-head">Who needs cover?</div>
+        <div class="radio-row" style="margin-bottom:16px">
+          <div class="ropt sel" onclick="selRadio(this,'cover')">Myself only</div>
+          <div class="ropt" onclick="selRadio(this,'cover')">Myself + spouse</div>
+          <div class="ropt" onclick="selRadio(this,'cover')">Family</div>
+        </div>
+        <div class="fg fg2">
+          <div class="field"><label>First name *</label><input id="firstName" value="${d.firstName||''}"></div>
+          <div class="field"><label>Last name *</label><input id="lastName" value="${d.lastName||''}"></div>
+          <div class="field"><label>Date of birth *</label><input id="dob" type="date"></div>
+          <div class="field"><label>Gender</label><select id="gender"><option>Male</option><option>Female</option><option>Prefer not to say</option></select></div>
+          <div class="field"><label>SA ID *</label><input id="idNumber" placeholder="13 digits"></div>
+          <div class="field"><label>Mobile *</label><input id="mobile" value="${d.mobile||''}"></div>
+          <div class="field"><label>Email</label><input id="email" type="email" value="${d.email||''}"></div>
+          <div class="field"><label>Union</label><select id="union"><option>POPCRU</option><option>NEHAWU</option><option>NUMSA</option><option>COSATU</option></select></div>
+          <div class="field"><label>Number of children under 21</label><select id="numKids"><option>0</option><option>1</option><option>2</option><option>3</option><option>4+</option></select></div>
+          <div class="field"><label>Existing medical aid?</label><select id="existingAid"><option>No</option><option>Yes — switching</option></select></div>
+        </div>`;
+      if(s===1) return `
+        <div class="s-head">Pre-existing conditions (select all that apply)</div>
+        <div class="cond-grid">
+          ${['Hypertension','Diabetes Type 1','Diabetes Type 2','Asthma','HIV/AIDS','Cancer (current)','Cancer (remission)','Heart disease','Kidney disease','Arthritis','Depression / anxiety','Pregnancy'].map(c=>`<div class="cond-pill" onclick="this.classList.toggle('sel')">${c}</div>`).join('')}
+        </div>
+        <div class="s-head">Medication & lifestyle</div>
+        <div class="fg fg1">
+          <div class="field"><label>Chronic medication currently taken</label><textarea id="medication" placeholder="e.g. Metformin 500mg, Amlodipine 5mg..."></textarea></div>
+          <div class="field"><label>Smoking status</label>
+            <div class="radio-row"><div class="ropt sel" onclick="selRadio(this,'smoke')">Non-smoker</div><div class="ropt" onclick="selRadio(this,'smoke')">Ex-smoker</div><div class="ropt" onclick="selRadio(this,'smoke')">Current smoker</div></div>
+          </div>
+        </div>
+        <div class="s-head">Previous hospitalisations (last 3 years)</div>
+        <div class="fg fg2">
+          <div class="field"><label>Admitted to hospital?</label><select id="hospitalised"><option>No</option><option>Yes</option></select></div>
+          <div class="field"><label>Reason (if yes)</label><input id="hospitalReason" placeholder="Brief reason"></div>
+        </div>`;
+      if(s===2) return `
+        <div class="s-head">Select your plan</div>
+        <div class="plan-row">
+          <div class="plan" onclick="selPlan(this)">
+            <div class="plan-name">Essential</div>
+            <div class="plan-price">R890<span>/mo</span></div>
+            <div class="plan-feat">Hospital cover<br>Basic GP visits<br>Chronic medication</div>
+          </div>
+          <div class="plan sel" onclick="selPlan(this)">
+            <div style="font-size:10px;padding:2px 8px;border-radius:10px;background:var(--green-bg);color:var(--green);display:inline-block;margin-bottom:6px">Most popular</div>
+            <div class="plan-name">Comprehensive</div>
+            <div class="plan-price">R1,450<span>/mo</span></div>
+            <div class="plan-feat">Full hospital<br>Specialists<br>Dental & optical<br>Day-to-day</div>
+          </div>
+          <div class="plan" onclick="selPlan(this)">
+            <div class="plan-name">Executive</div>
+            <div class="plan-price">R2,800<span>/mo</span></div>
+            <div class="plan-feat">Private ward<br>Unlimited specialists<br>International cover<br>Full chronic & dental</div>
+          </div>
+        </div>
+        <div class="fg fg2">
+          <div class="field"><label>Cover start date</label><input type="date" id="coverStart" value="2026-06-01"></div>
+          <div class="field"><label>Payment method</label><select id="payMethod"><option>Union payroll deduction</option><option>Debit order</option><option>EFT monthly</option></select></div>
+        </div>
+        <div class="calc-box">
+          <div class="c-row"><span>Monthly premium</span><span>R1,450</span></div>
+          <div class="c-row"><span>Union group discount (10%)</span><span class="c-good">–R145</span></div>
+          <div class="c-row"><span>Your monthly cost</span><span>R1,305</span></div>
+        </div>`;
+      if(s===3) return `
+        <div class="s-head">Required documents</div>
+        <div class="doc-row"><div class="doc-ic">🪪</div><div class="doc-name">SA ID — main member</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">🪪</div><div class="doc-name">ID / birth certificate — dependants</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">❤️</div><div class="doc-name">Medical certificate (pre-existing conditions)</div><span class="doc-badge db-req">Required</span></div>
+        <div class="doc-row"><div class="doc-ic">💊</div><div class="doc-name">Chronic prescription</div><span class="doc-badge db-req">If applicable</span></div>
+        <div class="doc-row"><div class="doc-ic">📋</div><div class="doc-name">Previous scheme certificate</div><span class="doc-badge db-opt">If switching</span></div>
+        <div class="upload-zone"><div class="uz-icon">☁️</div><p>Tap to upload (demo — not required)</p></div>`;
+      if(s===4) return `
+        <div class="s-head">Review enrolment</div>
+        <div class="calc-box">
+          <div class="c-row"><span>Plan</span><span>Comprehensive</span></div>
+          <div class="c-row"><span>Monthly premium (after discount)</span><span>R1,305</span></div>
+          <div class="c-row"><span>Cover start</span><span>1 June 2026</span></div>
+          <div class="c-row"><span>Pre-existing waiting period</span><span class="c-warn">3 months</span></div>
+          <div class="c-row"><span>Loyalty points earned</span><span class="c-good">+300 pts</span></div>
+        </div>
+        <div class="check-item"><input type="checkbox"><div class="ci-text">I declare all health information is accurate and complete</div></div>
+        <div class="check-item"><input type="checkbox"><div class="ci-text">I agree to the scheme rules and monthly premium deduction</div></div>`;
+    },
+    collect(s,d){
+      if(s===0){['firstName','lastName','dob','gender','idNumber','mobile','email','union','numKids','existingAid'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value})}
+      if(s===1){['medication','hospitalised','hospitalReason'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value})}
+      if(s===2){['coverStart','payMethod'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value})}
+    }
+  },
+
+  insurance:{label:'Insurance',sub:'Life, funeral, home contents & vehicle insurance',icon:'🛡️',iconBg:'#E1F5EE',pts:100,
+    steps:['Cover type','Cover details','Free bundle 🎁','Beneficiaries','Review & submit'],
+    render(s,d){
+      if(s===0) return `
+        <div class="s-head">Select your cover</div>
+        <div class="fg fg1" style="gap:8px">
+          <div class="check-item"><input type="checkbox" id="covLife" checked><div class="ci-text"><strong>Life cover</strong> — pays out on death<div class="ci-sub">From R150,000 · from R310/mo</div></div></div>
+          <div class="check-item"><input type="checkbox" id="covFuneral" checked><div class="ci-text"><strong>Funeral plan</strong> — family cover, 48-hour payout<div class="ci-sub">From R10,000 per member · from R85/mo</div></div></div>
+          <div class="check-item"><input type="checkbox" id="covContents"><div class="ci-text"><strong>Home contents</strong> — household goods & appliances<div class="ci-sub">Insure your valuables</div></div></div>
+          <div class="check-item"><input type="checkbox" id="covVehicle"><div class="ci-text"><strong>Vehicle insurance</strong> — comprehensive or third party</div></div>
+        </div>
+        <div class="s-head">Personal details</div>
+        <div class="fg fg2">
+          <div class="field"><label>First name *</label><input id="firstName" value="${d.firstName||''}"></div>
+          <div class="field"><label>Last name *</label><input id="lastName" value="${d.lastName||''}"></div>
+          <div class="field"><label>SA ID *</label><input id="idNumber" placeholder="13 digits"></div>
+          <div class="field"><label>Mobile *</label><input id="mobile" value="${d.mobile||''}"></div>
+          <div class="field"><label>Email</label><input id="email" type="email" value="${d.email||''}"></div>
+          <div class="field"><label>Union</label><select id="union"><option>POPCRU</option><option>NEHAWU</option><option>NUMSA</option><option>COSATU</option></select></div>
+          <div class="field"><label>Age</label><input id="age" type="number" placeholder="e.g. 35"></div>
+          <div class="field"><label>Smoker?</label><select id="smoker"><option>No</option><option>Yes</option></select></div>
+        </div>`;
+      if(s===1) return `
+        <div class="s-head">Life cover</div>
+        <div class="fg fg2">
+          <div class="field"><label>Cover amount</label><select id="lifeCover"><option>R150,000</option><option>R300,000</option><option value="R500,000" selected>R500,000</option><option>R750,000</option><option>R1,000,000</option></select></div>
+          <div class="field"><label>Policy term</label><select id="lifeTerm"><option>10 years</option><option>15 years</option><option value="20 years" selected>20 years</option><option>Whole life</option></select></div>
+        </div>
+        <div class="calc-box">
+          <div class="c-row"><span>Life cover R500k (20yr)</span><span>R345/mo</span></div>
+          <div class="c-row"><span>Union group discount</span><span class="c-good">–R35/mo</span></div>
+          <div class="c-row"><span>Life premium</span><span>R310/mo</span></div>
+        </div>
+        <div class="s-head">Funeral plan</div>
+        <div class="fg fg2">
+          <div class="field"><label>Main member cover</label><select id="funeralMain"><option>R10,000</option><option>R15,000</option><option>R20,000</option><option>R30,000</option></select></div>
+          <div class="field"><label>Extended cover</label><select id="funeralFamily"><option>None</option><option>Spouse + kids</option><option>All dependants</option><option>Extended family</option></select></div>
+        </div>
+        <div class="calc-box">
+          <div class="c-row"><span>Funeral plan (family)</span><span>R85/mo</span></div>
+          <div class="c-row"><span>Total monthly premium</span><span style="font-weight:600">R395/mo</span></div>
+        </div>`;
+      if(s===2) return `
+        <div style="background:linear-gradient(135deg,#1a1a1a,#2a1a1a);border-radius:12px;padding:18px;margin-bottom:20px;text-align:center">
+          <div style="font-size:28px;margin-bottom:6px">🎁</div>
+          <div style="font-size:16px;font-weight:500;color:#fff;margin-bottom:4px">Your free monthly benefit</div>
+          <div style="font-size:13px;color:#aaa">As a Raoul Capital insurance member, you receive a free airtime or data bundle every month — included at no extra cost.</div>
+        </div>
+        <div class="s-head">Choose your free monthly bundle</div>
+        <div style="margin-bottom:14px">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:500">📞 Airtime bundles</div>
+          <div style="display:grid;gap:8px">
+            ${[
+              {name:'R50 Airtime',sub:'Any network · monthly top-up'},
+              {name:'R100 Airtime',sub:'Any network · monthly top-up'},
+              {name:'R200 Airtime',sub:'Any network · monthly top-up'},
+            ].map(b=>`<div class="check-item" onclick="selBundle(this,'${b.name}')" style="justify-content:space-between;cursor:pointer">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:30px;height:30px;background:#E6F1FB;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">📞</div>
+                <div><div class="ci-text">${b.name}</div><div class="ci-sub">${b.sub}</div></div>
+              </div>
+              <span style="font-size:11px;padding:2px 9px;background:#EAF3DE;color:#3B6D11;border-radius:10px;font-weight:500">FREE</span>
+            </div>`).join('')}
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:500">📶 Data bundles</div>
+          <div style="display:grid;gap:8px">
+            ${[
+              {name:'1GB Data',sub:'Valid 30 days · Any network'},
+              {name:'3GB Data',sub:'Valid 30 days · Any network'},
+              {name:'10GB Data',sub:'Valid 30 days · Any network'},
+            ].map(b=>`<div class="check-item" onclick="selBundle(this,'${b.name}')" style="justify-content:space-between;cursor:pointer">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:30px;height:30px;background:#E6F1FB;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">📶</div>
+                <div><div class="ci-text">${b.name}</div><div class="ci-sub">${b.sub}</div></div>
+              </div>
+              <span style="font-size:11px;padding:2px 9px;background:#EAF3DE;color:#3B6D11;border-radius:10px;font-weight:500">FREE</span>
+            </div>`).join('')}
+          </div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:12px;margin-top:14px;font-size:12px;color:var(--muted);border:1px solid var(--border)">
+          <strong>Mobile number for bundle delivery:</strong>
+          <input id="bundleMobile" value="${d.mobile||''}" placeholder="Number to receive airtime/data" style="width:100%;margin-top:6px;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit">
+        </div>`;
+      if(s===3) return `
+        <div class="s-head">Life cover beneficiaries</div>
+        <div class="fg fg2">
+          <div class="field"><label>Beneficiary 1 name</label><input id="ben1Name" placeholder="Full name"></div>
+          <div class="field"><label>Relationship</label><select id="ben1Rel"><option>Spouse</option><option>Child</option><option>Parent</option><option>Sibling</option></select></div>
+          <div class="field"><label>Beneficiary 1 ID</label><input id="ben1Id" placeholder="SA ID"></div>
+          <div class="field"><label>Share %</label><input id="ben1Share" placeholder="e.g. 60" type="number"></div>
+          <div class="field"><label>Beneficiary 2 name</label><input id="ben2Name" placeholder="Full name (optional)"></div>
+          <div class="field"><label>Share %</label><input id="ben2Share" placeholder="e.g. 40" type="number"></div>
+        </div>
+        <div class="s-head">Payment</div>
+        <div class="fg fg2">
+          <div class="field"><label>Payment method</label><select id="payMethod"><option>Union payroll deduction</option><option>Debit order</option></select></div>
+          <div class="field"><label>Debit date</label><select id="debitDate"><option>1st of month</option><option>15th of month</option><option>25th of month</option></select></div>
+        </div>`;
+      if(s===4) return `
+        <div class="s-head">Insurance summary</div>
+        <div class="calc-box">
+          <div class="c-row"><span>Life cover (R500k, 20yr)</span><span>R310/mo</span></div>
+          <div class="c-row"><span>Funeral plan (family)</span><span>R85/mo</span></div>
+          <div class="c-row"><span>Total monthly premium</span><span style="font-weight:600">R395/mo</span></div>
+          <div class="c-row"><span>Free monthly bundle</span><span class="c-good">${d.freeBundle||'Not selected'} ✓</span></div>
+          <div class="c-row"><span>Loyalty points</span><span class="c-good">+100 pts</span></div>
+        </div>
+        <div class="check-item"><input type="checkbox"><div class="ci-text">I confirm all information is accurate for underwriting</div></div>
+        <div class="check-item"><input type="checkbox"><div class="ci-text">I consent to monthly premium deduction as selected</div></div>`;
+    },
+    collect(s,d){
+      if(s===0){['firstName','lastName','idNumber','mobile','email','union','age','smoker'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value})}
+      if(s===1){['lifeCover','lifeTerm','funeralMain','funeralFamily'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value})}
+      if(s===2){const bm=document.getElementById('bundleMobile');if(bm)d.bundleMobile=bm.value;if(d.bundle)d.freeBundle=d.bundle;}
+      if(s===3){['ben1Name','ben1Rel','ben1Id','ben1Share','ben2Name','ben2Share','payMethod','debitDate'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value})}
+    }
+  },
+
+  diamond:{label:'Diamond card',sub:'VIP loyalty & cashback card — exclusive to union members',icon:'💎',iconBg:'#EEEDFE',pts:200,
+    steps:['Eligibility','Card details','Preferences','Review & submit'],
+    render(s,d){
+      if(s===0) return `
+        <div class="s-head">Eligibility check</div>
+        <div class="calc-box">
+          <div class="c-row"><span>Your current tier</span><span>Diamond (4,200 pts)</span></div>
+          <div class="c-row"><span>Minimum required</span><span class="c-good">2,000 pts ✓</span></div>
+          <div class="c-row"><span>Union membership</span><span class="c-good">POPCRU — verified ✓</span></div>
+          <div class="c-row"><span>KYC status</span><span class="c-good">Approved ✓</span></div>
+        </div>
+        <div class="s-head">Included benefits</div>
+        <div class="check-item"><input type="checkbox" checked disabled><div class="ci-text">Unlimited cashback — no cap<div class="ci-sub">Earn on every rand spent</div></div></div>
+        <div class="check-item"><input type="checkbox" checked disabled><div class="ci-text">Priority loan processing — same-day decisions</div></div>
+        <div class="check-item"><input type="checkbox" checked disabled><div class="ci-text">Medical aid group discount — 15% (vs 10% standard)</div></div>
+        <div class="check-item"><input type="checkbox" checked disabled><div class="ci-text">SLOW airport lounge access at SA airports</div></div>
+        <div class="check-item"><input type="checkbox" checked disabled><div class="ci-text">Free R10,000 funeral cover included</div></div>`;
+      if(s===1) return `
+        <div class="s-head">Card details</div>
+        <div class="fg fg2">
+          <div class="field"><label>First name *</label><input id="firstName" value="${d.firstName||'David'}"></div>
+          <div class="field"><label>Last name *</label><input id="lastName" value="${d.lastName||'Pashe'}"></div>
+          <div class="field"><label>Mobile *</label><input id="mobile" value="${d.mobile||'0823456789'}"></div>
+          <div class="field"><label>Email</label><input id="email" type="email" value="${d.email||''}"></div>
+          <div class="field"><label>Card design</label><select id="cardDesign"><option>Classic black</option><option>POPCRU union branded</option><option>Raoul Capital red</option></select></div>
+          <div class="field"><label>Card type</label><select id="cardType"><option>Virtual card (instant)</option><option>Physical card (7–10 days)</option><option>Both</option></select></div>
+        </div>
+        <div class="s-head">Delivery address (physical card)</div>
+        <div class="fg fg2">
+          <div class="field"><label>Street address</label><input id="deliveryStreet"></div>
+          <div class="field"><label>Suburb</label><input id="deliverySuburb"></div>
+          <div class="field"><label>City</label><input id="deliveryCity"></div>
+          <div class="field"><label>Postal code</label><input id="deliveryPostal"></div>
+        </div>`;
+      if(s===2) return `
+        <div class="s-head">Double cashback categories (choose up to 3)</div>
+        <div class="cond-grid">
+          ${['Groceries','Fuel','Clothing','Restaurants','Pharmacy','School fees','Utilities','Online shopping'].map(c=>`<div class="cond-pill" onclick="this.classList.toggle('sel')">${c}</div>`).join('')}
+        </div>
+        <div class="s-head">Notifications</div>
+        <div class="check-item"><input type="checkbox" checked><div class="ci-text">Points earned (SMS)</div></div>
+        <div class="check-item"><input type="checkbox" checked><div class="ci-text">Tier upgrade alerts</div></div>
+        <div class="check-item"><input type="checkbox"><div class="ci-text">Monthly loyalty statement (email)</div></div>
+        <div class="check-item"><input type="checkbox" checked><div class="ci-text">Member-only offers and promotions</div></div>`;
+      if(s===3) return `
+        <div class="s-head">Confirm your Diamond card</div>
+        <div class="calc-box">
+          <div class="c-row"><span>Name on card</span><span>${d.firstName||'David'} ${d.lastName||'Pashe'}</span></div>
+          <div class="c-row"><span>Card type</span><span>${d.cardType||'Virtual (instant)'}</span></div>
+          <div class="c-row"><span>Design</span><span>${d.cardDesign||'Classic black'}</span></div>
+          <div class="c-row"><span>Annual fee</span><span class="c-good">R0 (Diamond members free)</span></div>
+          <div class="c-row"><span>Activation bonus</span><span class="c-good">+200 pts on activation</span></div>
+        </div>
+        <div class="check-item"><input type="checkbox"><div class="ci-text">I agree to the Diamond card terms and conditions</div></div>
+        <div class="check-item"><input type="checkbox"><div class="ci-text">Points are non-transferable and expire after 24 months of inactivity</div></div>`;
+    },
+    collect(s,d){
+      if(s===1){['firstName','lastName','mobile','email','cardDesign','cardType','deliveryStreet','deliverySuburb','deliveryCity','deliveryPostal'].forEach(k=>{const el=document.getElementById(k);if(el)d[k]=el.value})}
+    }
+  }
+};
+
+/* ══════════ APP FLOW ══════════ */
+function startApp(type){
+  curApp = type; curStep = 0;
+  formData = currentUser ? {
+    firstName: currentUser.firstName,
+    lastName: currentUser.lastName,
+    mobile: currentUser.mobile||'',
+    email: currentUser.email||'',
+    union: currentUser.union||''
+  } : {};
+  const btn = document.getElementById('btnNext');
+  if(btn){ btn.disabled = false; btn.textContent = 'Continue →'; }
+  showPage('apply');
+  renderForm();
+}
+
+function renderForm(){
+  const cfg = APPS[curApp];
+  const numSteps = cfg.steps.length;
+
+  let progHTML = '<div class="progress">';
+  cfg.steps.forEach((lbl,i)=>{
+    const done = i<curStep, curr = i===curStep;
+    progHTML += `<div class="p-step">
+      <div class="p-dot ${done?'done':curr?'curr':''}">${done?'✓':i+1}</div>
+      <div class="p-lbl">${lbl}</div>
+      ${i<numSteps-1?`<div style="flex:1;height:1px;background:${done?'var(--red)':'var(--border)'};margin-top:14px"></div>`:''}
+    </div>`;
+  });
+  progHTML += '</div>';
+
+  document.getElementById('appHeader').innerHTML = `
+    <div class="app-header-top">
+      <div class="app-icon" style="background:${cfg.iconBg}">${cfg.icon}</div>
+      <div><div class="app-title">${cfg.label}</div><div class="app-sub">${cfg.sub}</div></div>
+    </div>
+    ${progHTML}`;
+
+  document.getElementById('formBody').innerHTML = cfg.render(curStep, formData) || '';
+  document.getElementById('stepInfo').textContent = `Step ${curStep+1} of ${numSteps}`;
+  document.getElementById('btnBack').style.display = curStep > 0 ? 'inline-block' : 'none';
+  document.getElementById('btnNext').textContent = curStep === numSteps-1 ? 'Submit application →' : 'Continue →';
+}
+
+function nextStep(){
+  const cfg = APPS[curApp];
+  cfg.collect(curStep, formData);
+  if(curStep < cfg.steps.length-1){
+    curStep++;
+    renderForm();
+    window.scrollTo(0,0);
+  } else {
+    submitApp();
+  }
+}
+
+function prevStep(){
+  if(curStep>0){ curStep--; renderForm(); }
+}
+
+async function submitApp(){
+  const cfg = APPS[curApp];
+  cfg.collect(curStep, formData);
+  document.getElementById('btnNext').textContent = 'Submitting...';
+  document.getElementById('btnNext').disabled = true;
+
+  try {
+    const res = await fetch(`${API}/api/apply`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({type:curApp, data:formData, pts:cfg.pts})
+    });
+    const result = await res.json();
+
+    document.getElementById('successRef').textContent = result.ref;
+    document.getElementById('successPts').innerHTML = `⭐ +${cfg.pts} loyalty points added`;
+    document.getElementById('successSub').textContent = `Your ${cfg.label} application has been received. Our team will contact you within 24 hours.`;
+    document.getElementById('emailNote').innerHTML = `📧 Notification sent to <strong>david@cccis.space</strong>${formData.email?' and <strong>'+formData.email+'</strong>':''}.`;
+
+    // refresh user data
+    if(currentUser){
+      const loginRes = await fetch(`${API}/api/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:currentUser.email,password:currentUser.password||'__cached__'})});
+      // update points optimistically
+      currentUser.points = (currentUser.points||100) + (cfg.pts||50);
+      currentUser.tier = currentUser.points>=2000?'Diamond':currentUser.points>=1000?'Gold':'Bronze';
+      if(!currentUser.applications) currentUser.applications=[];
+      currentUser.applications.push({ref:result.ref,type:curApp,pts:cfg.pts,status:'new',submittedAt:new Date().toISOString()});
+      updateNavAuth();
+    }
+
+    // fully reset for next application
+    curStep = 0;
+    formData = {};
+    document.getElementById('btnNext').textContent = 'Continue →';
+    document.getElementById('btnNext').disabled = false;
+
+    showPage('success');
+  } catch(e){
+    showToast('Submission failed — is the server running?','error');
+    document.getElementById('btnNext').textContent = 'Submit application →';
+    document.getElementById('btnNext').disabled = false;
+  }
+}
+
+/* ══════════ CALCULATORS ══════════ */
+function fmtAmt(v){
+  const amt = parseInt(v);
+  const fee = Math.round(amt*.05);
+  const cb = Math.round(amt*.005);
+  const total = Math.round(amt*1.045);
+  document.getElementById('amtDisp').textContent = amt.toLocaleString();
+  document.getElementById('c1').textContent = 'R'+amt.toLocaleString();
+  document.getElementById('c2').textContent = 'R'+fee.toLocaleString();
+  document.getElementById('c3').textContent = '–R'+cb.toLocaleString();
+  document.getElementById('c4').textContent = 'R'+total.toLocaleString();
+  formData.amount = amt;
+}
+
+function calcVehicle(){
+  const p = parseFloat(document.getElementById('vPrice')?.value)||0;
+  const dep = parseFloat(document.getElementById('vDeposit')?.value)||0;
+  const term = parseInt(document.getElementById('vTerm')?.value)||60;
+  const loan = p-dep; const rate = 0.1175/12;
+  const inst = loan>0?Math.round(loan*rate*Math.pow(1+rate,term)/(Math.pow(1+rate,term)-1)):0;
+  const box = document.getElementById('vCalc');
+  if(box && loan>0) box.innerHTML = `
+    <div class="c-row"><span>Loan amount</span><span>R${loan.toLocaleString()}</span></div>
+    <div class="c-row"><span>Rate (prime +2%)</span><span>11.75% p.a.</span></div>
+    <div class="c-row"><span>Monthly installment</span><span>R${inst.toLocaleString()}</span></div>
+    <div class="c-row"><span>Total cost of credit</span><span>R${(inst*term).toLocaleString()}</span></div>`;
+}
+
+function calcAfford(type){
+  const net = parseFloat(document.getElementById('netIncome')?.value)||0;
+  const oblig = (parseFloat(document.getElementById('obligations')?.value)||0)+(parseFloat(document.getElementById('living')?.value)||0);
+  const disp = net-oblig; const maxI = Math.round(net*.35);
+  const ad = document.getElementById('aDisp'), am = document.getElementById('aMax');
+  if(ad){ ad.textContent = net>0?'R'+disp.toLocaleString():'—'; ad.className = disp>0?'c-good':'c-bad'; }
+  if(am) am.textContent = maxI>0?'R'+maxI.toLocaleString():'—';
+}
+
+function calcHome(){
+  const p = parseFloat(document.getElementById('propPrice')?.value)||0;
+  const dep = parseFloat(document.getElementById('propDeposit')?.value)||0;
+  const term = parseInt(document.getElementById('propTerm')?.value||20)*12;
+  const loan = p-dep; const rate = 0.1175/12;
+  const bond = loan>0?Math.round(loan*rate*Math.pow(1+rate,term)/(Math.pow(1+rate,term)-1)):0;
+  const duty = p<=1000000?0:p<=13000000?Math.round((p-1000000)*.03):Math.round((p-13000000)*.08+360000);
+  const box = document.getElementById('homeCalc');
+  if(box && loan>0) box.innerHTML = `
+    <div class="c-row"><span>Loan amount</span><span>R${loan.toLocaleString()}</span></div>
+    <div class="c-row"><span>Monthly bond repayment</span><span>R${bond.toLocaleString()}</span></div>
+    <div class="c-row"><span>Transfer duty estimate</span><span>R${duty.toLocaleString()}</span></div>
+    <div class="c-row"><span>Union top-up benefit</span><span class="c-good">R12,000 applied</span></div>`;
+}
+
+function calcHomeAfford(){
+  const net = parseFloat(document.getElementById('netIncome')?.value)||0;
+  const gross = parseFloat(document.getElementById('grossIncome')?.value)||0;
+  const oblig = parseFloat(document.getElementById('obligations')?.value)||0;
+  const maxBond = Math.round(net*.30);
+  const flisp = gross>=3500&&gross<=22000;
+  const flEl = document.getElementById('flispStatus');
+  const mbEl = document.getElementById('maxBond');
+  if(flEl) flEl.textContent = flisp?'Likely eligible ✓':'Likely not eligible';
+  if(flEl) flEl.className = flisp?'c-good':'c-warn';
+  if(mbEl) mbEl.textContent = maxBond>0?'R'+maxBond.toLocaleString():'—';
+}
+
+/* ══════════ HELPERS ══════════ */
+function selRadio(el){ el.closest('.radio-row').querySelectorAll('.ropt').forEach(r=>r.classList.remove('sel')); el.classList.add('sel'); }
+function selPlan(el){ el.closest('.plan-row').querySelectorAll('.plan').forEach(p=>p.classList.remove('sel')); el.classList.add('sel'); }
+function selBundle(el,val){ document.querySelectorAll('.check-item[onclick]').forEach(c=>{c.style.borderColor='';c.style.background='';}); el.style.borderColor='#C41E1E'; el.style.background='#FEF2F2'; formData.bundle=val; }
+
+/* ══════════ ADMIN ══════════ */
+async function loadAdmin(){
+  try {
+    const [appsRes, usersRes, statsRes] = await Promise.all([
+      fetch(`${API}/api/applications`),
+      fetch(`${API}/api/users`),
+      fetch(`${API}/api/stats`)
+    ]);
+    const allApps = await appsRes.json();
+    const allUsers = await usersRes.json();
+    const stats = await statsRes.json();
+    const pendingUsers = allUsers.filter(u=>u.status==='pending').length;
+    const pendingApps = allApps.filter(a=>a.status==='new').length;
+    const pendingEl = document.getElementById('pendingCount');
+    const appCountEl = document.getElementById('appCount');
+    if(pendingEl) pendingEl.textContent = pendingUsers;
+    if(appCountEl) appCountEl.textContent = pendingApps;
+    if(adminView === 'members') renderMembersTab(allUsers);
+    else renderAdminContent(allApps, allUsers, stats);
+  } catch(e){
+    document.getElementById('adminContent').innerHTML=`<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Cannot connect to server</div><div class="empty-sub">Make sure the backend is running on port 3000</div></div>`;
+  }
+}
+
+function renderMembersTab(allUsers){
+  const pending = allUsers.filter(u=>u.status==='pending');
+  const approved = allUsers.filter(u=>u.status==='approved');
+  const rejected = allUsers.filter(u=>u.status==='rejected');
+
+  let html = `
+    <div class="admin-topbar">
+      <div><div class="admin-title">Members</div><div class="admin-sub">${allUsers.length} total · ${pending.length} awaiting approval</div></div>
+      <button class="btn btn-primary" onclick="loadAdmin()">↻ Refresh</button>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-lbl">Total members</div><div class="kpi-val">${allUsers.length}</div></div>
+      <div class="kpi"><div class="kpi-lbl">Pending approval</div><div class="kpi-val" style="color:var(--amber)">${pending.length}</div>${pending.length>0?'<div class="kpi-ch kpi-dn">Needs action</div>':''}</div>
+      <div class="kpi"><div class="kpi-lbl">Approved</div><div class="kpi-val" style="color:var(--green)">${approved.length}</div></div>
+      <div class="kpi"><div class="kpi-lbl">Rejected</div><div class="kpi-val" style="color:#A32D2D">${rejected.length}</div></div>
+    </div>`;
+
+  if(pending.length > 0){
+    html += `<div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:10px">⏳ Awaiting approval (${pending.length})</div>`;
+    html += `<table class="app-table" style="margin-bottom:24px">
+      <thead><tr><th>Member ID</th><th>Name</th><th>Email</th><th>Mobile</th><th>Union</th><th>ID Number</th><th>Registered</th><th>Actions</th></tr></thead><tbody>`;
+    pending.forEach(u=>{
+      html += `<tr style="background:#FAFDF7">
+        <td style="font-family:monospace;font-size:12px;color:var(--red)">${u.memberId}</td>
+        <td style="font-weight:500">${u.firstName} ${u.lastName}</td>
+        <td style="font-size:12px">${u.email}</td>
+        <td style="font-size:12px">${u.mobile}</td>
+        <td>${u.union}</td>
+        <td style="font-family:monospace;font-size:12px">${u.idNumber||'—'}</td>
+        <td style="font-size:12px;color:var(--muted)">${new Date(u.createdAt).toLocaleDateString('en-ZA')}</td>
+        <td>
+          <button class="action-btn approve" onclick="approveMember('${u.id}')">✓ Approve</button>
+          <button class="action-btn reject" onclick="rejectMember('${u.id}','${u.firstName} ${u.lastName}')">✗ Reject</button>
+        </td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  if(approved.length > 0){
+    html += `<div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:10px">✅ Approved members (${approved.length})</div>`;
+    html += `<table class="app-table" style="margin-bottom:24px">
+      <thead><tr><th>Member ID</th><th>Name</th><th>Email</th><th>Union</th><th>Points</th><th>Tier</th><th>Approved</th></tr></thead><tbody>`;
+    approved.forEach(u=>{
+      html += `<tr>
+        <td style="font-family:monospace;font-size:12px">${u.memberId}</td>
+        <td style="font-weight:500">${u.firstName} ${u.lastName}</td>
+        <td style="font-size:12px">${u.email}</td>
+        <td>${u.union}</td>
+        <td style="font-weight:500;color:var(--amber)">${(u.points||100).toLocaleString()} pts</td>
+        <td><span class="status-badge ${u.tier==='Diamond'?'sb-new':u.tier==='Gold'?'sb-callback':'sb-review'}">${u.tier||'Bronze'}</span></td>
+        <td style="font-size:12px;color:var(--muted)">${u.approvedAt?new Date(u.approvedAt).toLocaleDateString('en-ZA'):'—'}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  if(rejected.length > 0){
+    html += `<div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:10px">❌ Rejected (${rejected.length})</div>`;
+    html += `<table class="app-table">
+      <thead><tr><th>Member ID</th><th>Name</th><th>Email</th><th>Union</th><th>Reason</th><th>Actions</th></tr></thead><tbody>`;
+    rejected.forEach(u=>{
+      html += `<tr>
+        <td style="font-family:monospace;font-size:12px">${u.memberId}</td>
+        <td style="font-weight:500">${u.firstName} ${u.lastName}</td>
+        <td style="font-size:12px">${u.email}</td>
+        <td>${u.union}</td>
+        <td style="font-size:12px;color:var(--muted)">${u.rejectionReason||'—'}</td>
+        <td><button class="action-btn approve" onclick="approveMember('${u.id}')">↩ Re-approve</button></td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  if(allUsers.length === 0){
+    html += `<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-text">No members yet</div><div class="empty-sub">Members will appear here after registering</div></div>`;
+  }
+
+  document.getElementById('adminContent').innerHTML = html;
+}
+
+async function approveMember(id){
+  try {
+    await fetch(`${API}/api/users/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'approved'})});
+    showToast('Member approved — confirmation email sent ✓','success');
+    loadAdmin();
+  } catch(e){ showToast('Failed to approve','error'); }
+}
+
+async function rejectMember(id, name){
+  const reason = prompt(`Reason for rejecting ${name} (optional):`);
+  if(reason === null) return; // cancelled
+  try {
+    await fetch(`${API}/api/users/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'rejected',rejectionReason:reason||''})});
+    showToast('Member rejected — notification email sent','success');
+    loadAdmin();
+  } catch(e){ showToast('Failed to reject','error'); }
+}
+
+function renderAdminContent(allApps, allUsers, stats){
+  let apps = allApps;
+  if(adminFilterVal){
+    if(['new','callback','approved','rejected'].includes(adminFilterVal)) apps = allApps.filter(a=>a.status===adminFilterVal);
+    else apps = allApps.filter(a=>a.type===adminFilterVal);
+  }
+
+  const labels = {payday:'Payday Loan',vehicle:'Vehicle Finance',home:'Home Loan',medical:'Medical Aid',insurance:'Insurance',diamond:'Diamond Card'};
+  const statColors = {new:'sb-new',callback:'sb-callback',approved:'sb-approved',rejected:'sb-rejected',review:'sb-review'};
+
+  const total = allApps.length;
+  const approvedApps = allApps.filter(a=>a.status==='approved').length;
+  const pending = allApps.filter(a=>a.status==='new'||a.status==='callback').length;
+  const totalPts = allApps.reduce((s,a)=>s+(a.pts||0),0);
+  const pendingMembers = (allUsers||[]).filter(u=>u.status==='pending').length;
+
+  let html = `
+    <div class="admin-topbar">
+      <div><div class="admin-title">Admin portal</div><div class="admin-sub">david@cccis.space · ${new Date().toLocaleDateString('en-ZA')}</div></div>
+      <button class="btn btn-primary" onclick="loadAdmin()">↻ Refresh</button>
+    </div>`;
+
+  if(pendingMembers > 0){
+    html += `<div style="background:#FAEEDA;border:1px solid #f5d9a8;border-radius:10px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:18px">⏳</span>
+        <span style="font-size:13px;font-weight:500;color:#633806">${pendingMembers} member${pendingMembers>1?'s':''} awaiting approval</span>
+      </div>
+      <button class="btn" style="font-size:12px;padding:6px 12px;color:var(--amber);border-color:var(--amber)" onclick="adminTab('members',document.querySelector('[onclick*=members]'))">Review now →</button>
+    </div>`;
+  }
+
+  html += `<div class="kpi-row">
+      <div class="kpi"><div class="kpi-lbl">Total members</div><div class="kpi-val">${(allUsers||[]).length}</div></div>
+      <div class="kpi"><div class="kpi-lbl">Applications</div><div class="kpi-val">${total}</div></div>
+      <div class="kpi"><div class="kpi-lbl">Pending review</div><div class="kpi-val" style="color:var(--amber)">${pending}</div></div>
+      <div class="kpi"><div class="kpi-lbl">Points issued</div><div class="kpi-val">${totalPts.toLocaleString()}</div></div>
+    </div>`;
+
+  if(apps.length===0){
+    html += `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">No applications yet</div><div class="empty-sub">Submit an application from the Apply tab to see it here</div></div>`;
+  } else {
+    html += `<table class="app-table">
+      <thead><tr><th>Reference</th><th>Applicant</th><th>Product</th><th>Amount</th><th>Union</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>`;
+    apps.forEach(a=>{
+      const name = `${a.data.firstName||'—'} ${a.data.lastName||''}`.trim();
+      const amt = a.data.amount?'R'+Number(a.data.amount).toLocaleString():'—';
+      const date = new Date(a.submittedAt).toLocaleDateString('en-ZA');
+      const sc = statColors[a.status]||'sb-new';
+      html += `<tr>
+        <td style="font-family:monospace;font-size:12px">${a.ref}</td>
+        <td style="font-weight:500">${name||'—'}</td>
+        <td>${labels[a.type]||a.type}</td>
+        <td>${amt}</td>
+        <td>${a.data.union||'—'}</td>
+        <td><span class="status-badge ${sc}">${a.status}</span></td>
+        <td style="font-size:12px;color:var(--muted)">${date}</td>
+        <td>
+          <button class="action-btn" onclick="viewApp('${a.ref}')">👁 View</button>
+          <button class="action-btn approve" onclick="updateStatus('${a.ref}','approved')">✓</button>
+          <button class="action-btn" onclick="updateStatus('${a.ref}','callback')">📞</button>
+          <button class="action-btn reject" onclick="updateStatus('${a.ref}','rejected')">✗</button>
+        </td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+  }
+  document.getElementById('adminContent').innerHTML = html;
+}
+
+async function viewApp(ref){
+  try {
+    const res = await fetch(`${API}/api/applications/${ref}`);
+    const app = await res.json();
+    const labels = {payday:'Payday Loan',vehicle:'Vehicle Finance',home:'Home Loan',medical:'Medical Aid',insurance:'Insurance',diamond:'Diamond Card'};
+    const fields = Object.entries(app.data).filter(([k,v])=>v&&v!=='').map(([k,v])=>`<div class="detail-row"><div class="detail-lbl">${k}</div><div class="detail-val">${v}</div></div>`).join('');
+    document.getElementById('modalContent').innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">Application — ${app.ref}</div>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="detail-row"><div class="detail-lbl">Product</div><div class="detail-val">${labels[app.type]||app.type}</div></div>
+      <div class="detail-row"><div class="detail-lbl">Status</div><div class="detail-val">${app.status}</div></div>
+      <div class="detail-row"><div class="detail-lbl">Submitted</div><div class="detail-val">${new Date(app.submittedAt).toLocaleString('en-ZA')}</div></div>
+      <div class="detail-row"><div class="detail-lbl">Loyalty pts</div><div class="detail-val" style="color:var(--green)">+${app.pts}</div></div>
+      ${fields}
+      <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap">
+        <button class="btn btn-green" onclick="updateStatus('${app.ref}','approved');closeModal()">✓ Approve</button>
+        <button class="btn" style="color:var(--amber);border-color:var(--amber)" onclick="updateStatus('${app.ref}','callback');closeModal()">📞 Callback</button>
+        <button class="btn" style="color:#A32D2D;border-color:#A32D2D" onclick="updateStatus('${app.ref}','rejected');closeModal()">✗ Reject</button>
+      </div>`;
+    document.getElementById('modalBg').classList.add('open');
+  } catch(e){ showToast('Could not load application','error'); }
+}
+
+async function updateStatus(ref, status){
+  try {
+    await fetch(`${API}/api/applications/${ref}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})});
+    showToast(`Application ${ref} marked as ${status}`,'success');
+    loadAdmin();
+  } catch(e){ showToast('Update failed','error'); }
+}
+
+function closeModal(e){ if(!e||e.target===document.getElementById('modalBg')) document.getElementById('modalBg').classList.remove('open'); }
+
+function showToast(msg, type='success'){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${type} show`;
+  setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+// ── LOGIN TAB SWITCH ─────────────────────────────────────────────
+let loginMode = 'member';
+function switchLoginTab(mode){
+  loginMode = mode;
+  document.getElementById('tabMember').style.background = mode==='member'?'#C41E1E':'var(--bg)';
+  document.getElementById('tabMember').style.color = mode==='member'?'#fff':'var(--muted)';
+  document.getElementById('tabAdmin').style.background = mode==='admin'?'#1a1a1a':'var(--bg)';
+  document.getElementById('tabAdmin').style.color = mode==='admin'?'#fff':'var(--muted)';
+  document.getElementById('loginTitle').textContent = mode==='admin' ? 'Admin portal login' : 'Welcome back';
+  document.getElementById('loginSub').textContent = mode==='admin'
+    ? 'Sign in with your admin credentials to manage members and applications.'
+    : 'Sign in to your union loyalty account to apply for products and track your rewards.';
+  document.getElementById('loginEmail').placeholder = mode==='admin' ? 'admin@raoulcapital.com' : 'your@email.com';
+  document.getElementById('loginError').classList.remove('show');
+}
+
+// ── QR CODE GENERATION ────────────────────────────────────────────
+let qrInstance = null;
+function generateQR(url){
+  const canvas = document.getElementById('qrCanvas');
+  if(!canvas) return;
+  canvas.innerHTML='';
+  if(typeof QRCode === 'undefined'){ canvas.style.background='#f5f5f5'; canvas.style.display='flex'; canvas.style.alignItems='center'; canvas.style.justifyContent='center'; canvas.innerHTML='<div style="font-size:11px;color:#888;text-align:center;padding:20px">QR requires server<br>localhost:3000</div>'; return; }
+  try {
+    if(qrInstance){ canvas.innerHTML=''; }
+    qrInstance = new QRCode(canvas, { text: url, width: 200, height: 200, colorDark:'#C41E1E', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.M });
+  } catch(e){ console.log('QR error:', e); }
+}
+
+function downloadQR(){
+  const canvas = document.querySelector('#qrCanvas canvas') || document.querySelector('#qrCanvas img');
+  if(!canvas){ showToast('QR not ready yet','error'); return; }
+  const link = document.createElement('a');
+  link.download = 'raoul-capital-register-qr.png';
+  link.href = canvas.tagName==='CANVAS' ? canvas.toDataURL() : canvas.src;
+  link.click();
+}
+
+// Generate QR when QR page is shown
+const origShowPage = showPage;
+window.addEventListener('load', ()=>{
+  // Override showPage to trigger QR gen
+  const _sp = window.showPage;
+  window.showPage = function(p){
+    _sp(p);
+    if(p==='qr') setTimeout(()=>{ const u=document.getElementById('qrUrl'); generateQR(u?u.textContent:'http://localhost:3000/#register'); },200);
+  };
+});
+
+let shopItem = null;
+
+function showAirtimeShop(){
+  const m = document.getElementById('airtimeModal');
+  m.style.display='flex';
+  document.body.style.overflow='hidden';
+  if(currentUser && currentUser.mobile) setTimeout(()=>{ const el=document.getElementById('shopMobile'); if(el) el.value=currentUser.mobile; },100);
+  if(currentUser) setTimeout(()=>{ const el=document.getElementById('shopName'); if(el) el.value=currentUser.firstName+' '+currentUser.lastName; },100);
+}
+
+function closeAirtimeShop(){
+  document.getElementById('airtimeModal').style.display='none';
+  document.body.style.overflow='';
+  document.querySelectorAll('.shop-sel').forEach(el=>{ el.classList.remove('shop-sel'); el.style.borderColor=''; el.style.background=''; });
+  document.getElementById('shopSelection').style.display='none';
+  document.getElementById('shopBuyBtn').style.display='none';
+  document.getElementById('shopSuccess').style.display='none';
+  shopItem=null;
+}
+
+function selectShopItem(el, type, amount){
+  document.querySelectorAll('#airtimeModal div[onclick]').forEach(c=>{ c.classList.remove('shop-sel'); c.style.borderColor='var(--border)'; c.style.background=''; });
+  el.classList.add('shop-sel'); el.style.borderColor='#C41E1E'; el.style.background='#FEF2F2';
+  shopItem={type,amount};
+  document.getElementById('shopSelLabel').textContent = type==='airtime'?'R'+amount+' Airtime':amount+'GB Data';
+  document.getElementById('shopSelection').style.display='block';
+  document.getElementById('shopBuyBtn').style.display='block';
+  document.getElementById('shopSuccess').style.display='none';
+}
+
+function completePurchase(){
+  const mobile = document.getElementById('shopMobile').value.trim();
+  if(!mobile){ showToast('Please enter a mobile number','error'); return; }
+  const btn = document.getElementById('shopBuyBtn');
+  btn.textContent='Processing...'; btn.disabled=true;
+  setTimeout(()=>{
+    document.getElementById('shopSuccess').style.display='block';
+    document.getElementById('shopBuyBtn').style.display='none';
+    document.getElementById('shopSuccessItem').textContent = shopItem.type==='airtime'?'R'+shopItem.amount+' airtime':shopItem.amount+'GB data';
+    document.getElementById('shopSuccessNum').textContent = mobile;
+    showToast('Purchase successful! Points added 🎉','success');
+    btn.textContent='Purchase now →'; btn.disabled=false;
+  }, 1500);
+}
+</script>
+<!-- AIRTIME SHOP MODAL -->
+<div id="airtimeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto">
+    <div style="background:#1a1a1a;padding:18px 24px;border-radius:16px 16px 0 0;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:16px;font-weight:500;color:#fff">📱 Airtime & Data Shop</div>
+        <div style="font-size:12px;color:#888;margin-top:2px">Member rates · Instant top-up</div>
+      </div>
+      <button onclick="closeAirtimeShop()" style="background:none;border:none;color:#888;font-size:22px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <div style="padding:20px 24px">
+
+      <div style="background:#EAF3DE;border-radius:8px;padding:12px 14px;margin-bottom:20px;border-left:3px solid #3B6D11">
+        <div style="font-size:13px;font-weight:500;color:#3B6D11;margin-bottom:3px">🎁 FREE with Raoul Capital Insurance</div>
+        <div style="font-size:12px;color:#6b6964">Take out any insurance product and your monthly bundle is included at no extra cost. <span style="color:#C41E1E;cursor:pointer;font-weight:500" onclick="closeAirtimeShop();startApp('insurance')">Apply for insurance →</span></div>
+      </div>
+
+      <div style="font-size:13px;font-weight:500;color:#6b6964;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px">📞 Airtime</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px">
+        <div onclick="selectShopItem(this,'airtime',50)" style="border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .15s">
+          <div style="font-size:22px;margin-bottom:4px">📞</div>
+          <div style="font-size:18px;font-weight:500;color:#C41E1E">R 50</div>
+          <div style="font-size:11px;color:#888;margin:2px 0">Airtime</div>
+          <div style="font-size:10px;color:#3B6D11;background:#EAF3DE;padding:2px 6px;border-radius:8px;display:inline-block">+10 pts</div>
+        </div>
+        <div onclick="selectShopItem(this,'airtime',100)" style="border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .15s">
+          <div style="font-size:22px;margin-bottom:4px">📞</div>
+          <div style="font-size:18px;font-weight:500;color:#C41E1E">R 100</div>
+          <div style="font-size:11px;color:#888;margin:2px 0">Airtime</div>
+          <div style="font-size:10px;color:#3B6D11;background:#EAF3DE;padding:2px 6px;border-radius:8px;display:inline-block">+20 pts</div>
+        </div>
+        <div onclick="selectShopItem(this,'airtime',200)" style="border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .15s">
+          <div style="font-size:22px;margin-bottom:4px">📞</div>
+          <div style="font-size:18px;font-weight:500;color:#C41E1E">R 200</div>
+          <div style="font-size:11px;color:#888;margin:2px 0">Airtime</div>
+          <div style="font-size:10px;color:#3B6D11;background:#EAF3DE;padding:2px 6px;border-radius:8px;display:inline-block">+30 pts</div>
+        </div>
+      </div>
+
+      <div style="font-size:13px;font-weight:500;color:#6b6964;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px">📶 Data bundles</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+        <div onclick="selectShopItem(this,'data',49)" style="border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s">
+          <div style="font-size:28px;flex-shrink:0">📶</div>
+          <div><div style="font-size:16px;font-weight:500;color:#1a1a1a">1GB</div><div style="font-size:13px;color:#C41E1E;font-weight:500">R 49</div><div style="font-size:11px;color:#888">30 days</div><div style="font-size:10px;color:#3B6D11;background:#EAF3DE;padding:2px 6px;border-radius:8px;display:inline-block;margin-top:3px">+10 pts</div></div>
+        </div>
+        <div onclick="selectShopItem(this,'data',99)" style="border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s">
+          <div style="font-size:28px;flex-shrink:0">📶</div>
+          <div><div style="font-size:16px;font-weight:500;color:#1a1a1a">3GB</div><div style="font-size:13px;color:#C41E1E;font-weight:500">R 99</div><div style="font-size:11px;color:#888">30 days</div><div style="font-size:10px;color:#3B6D11;background:#EAF3DE;padding:2px 6px;border-radius:8px;display:inline-block;margin-top:3px">+20 pts</div></div>
+        </div>
+        <div onclick="selectShopItem(this,'data',199)" style="border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s">
+          <div style="font-size:28px;flex-shrink:0">📶</div>
+          <div><div style="font-size:16px;font-weight:500;color:#1a1a1a">10GB</div><div style="font-size:13px;color:#C41E1E;font-weight:500">R 199</div><div style="font-size:11px;color:#888">30 days</div><div style="font-size:10px;color:#3B6D11;background:#EAF3DE;padding:2px 6px;border-radius:8px;display:inline-block;margin-top:3px">+30 pts</div></div>
+        </div>
+        <div onclick="selectShopItem(this,'data',299)" style="border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s">
+          <div style="font-size:28px;flex-shrink:0">📶</div>
+          <div><div style="font-size:16px;font-weight:500;color:#1a1a1a">20GB</div><div style="font-size:13px;color:#C41E1E;font-weight:500">R 299</div><div style="font-size:11px;color:#888">Uncapped nights</div><div style="font-size:10px;color:#3B6D11;background:#EAF3DE;padding:2px 6px;border-radius:8px;display:inline-block;margin-top:3px">+50 pts</div></div>
+        </div>
+      </div>
+
+      <div id="shopSelection" style="display:none;background:var(--bg);border-radius:10px;padding:14px;margin-bottom:16px;border:1px solid var(--border)">
+        <div style="font-size:12px;color:#6b6964;margin-bottom:8px;font-weight:500">Selected: <span id="shopSelLabel" style="color:#C41E1E;font-weight:600"></span></div>
+        <label style="font-size:12px;color:#6b6964;font-weight:500;display:block;margin-bottom:5px">Mobile number to top up</label>
+        <input id="shopMobile" placeholder="e.g. 082 345 6789" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+          <div>
+            <label style="font-size:12px;color:#6b6964;font-weight:500;display:block;margin-bottom:5px">Network</label>
+            <select id="shopNetwork" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+              <option>Vodacom</option><option>MTN</option><option>Cell C</option><option>Telkom</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#6b6964;font-weight:500;display:block;margin-bottom:5px">Your name</label>
+            <input id="shopName" placeholder="Full name" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+          </div>
+        </div>
+      </div>
+
+      <button id="shopBuyBtn" onclick="completePurchase()" style="display:none;width:100%;padding:13px;background:#C41E1E;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;font-family:inherit">Purchase now →</button>
+
+      <div id="shopSuccess" style="display:none;background:#EAF3DE;border-radius:10px;padding:20px;text-align:center">
+        <div style="font-size:32px;margin-bottom:8px">✅</div>
+        <div style="font-size:15px;font-weight:500;color:#3B6D11;margin-bottom:4px">Purchase successful!</div>
+        <div style="font-size:13px;color:#6b6964;margin-bottom:12px">Your <span id="shopSuccessItem"></span> will be delivered to <span id="shopSuccessNum"></span> within minutes.</div>
+        <div style="font-size:12px;color:#3B6D11;background:#fff;border-radius:8px;padding:8px">🌟 Loyalty points added to your account</div>
+        <button onclick="closeAirtimeShop()" style="margin-top:14px;padding:10px 24px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-family:inherit">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
